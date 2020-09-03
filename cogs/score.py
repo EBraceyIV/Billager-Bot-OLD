@@ -54,17 +54,15 @@ class Score(commands.Cog):
     @commands.command(name="scoreboard", aliases=["Scoreboard"], help="Scoreboard of the highest and lowest scores.")
     async def scoreboard(self, ctx):
         embed = discord.Embed(title="Scoreboard")
+        desc = ""
         score_sorted = sorted(pmFile.items(), key=lambda x: x[1])
-        print(score_sorted[0][0])
-        try:
-            embed.add_field(name="High Score", value=score_sorted[0][0] + ": " + str(score_sorted[0][1]) + "\n" +
-                                                     score_sorted[1][0] + ": " + str(score_sorted[1][1]) + "\n")
-            embed.add_field(name="Low score", value=score_sorted[-1][0] + ": " + str(score_sorted[-1][1]) + "\n" +
-                                                     score_sorted[-2][0] + ": " + str(score_sorted[-2][1]) + "\n")
-        except IndexError:
-            await ctx.send("OUCH! WHY?")
-        else:
-            await ctx.send(embed=embed)
+        print(score_sorted)
+        for score in score_sorted:
+            desc = str(score[0]) + ": " + str(score[1]) + "\n" + desc
+        print(score_sorted[0][0] + str(score_sorted[0][1]))
+        embed.description = "Here's the current scoreboard. Honestly can't believe these numbers: \n\n" + desc
+        embed.set_footer(text="Be sure to use bb:+ and bb:- to our keep scoreboard up to date.")
+        await ctx.send(embed=embed)
 
     @plus.error
     async def plus_error(self, ctx, error):
