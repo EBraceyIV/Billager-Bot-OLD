@@ -53,13 +53,16 @@ class Score(commands.Cog):
 
     @commands.command(name="scoreboard", aliases=["Scoreboard"], help="Scoreboard of the highest and lowest scores.")
     async def scoreboard(self, ctx):
+        # Initialize scoreboard embed message and embed description
         embed = discord.Embed(title="Scoreboard")
         desc = ""
+        # Sort the current user scores from highest to lowest
         score_sorted = sorted(pmFile.items(), key=lambda x: x[1])
-        print(score_sorted)
+        # Iterate through the scores and build the embed content
         for score in score_sorted:
+            # Here "score" is a tuple, containing the user and score, adding each to a new line
             desc = str(score[0]) + ": " + str(score[1]) + "\n" + desc
-        print(score_sorted[0][0] + str(score_sorted[0][1]))
+        # Add some flavor text and send the message
         embed.description = "Here's the current scoreboard. Honestly can't believe these numbers: \n\n" + desc
         embed.set_footer(text="Be sure to use bb:+ and bb:- to our keep scoreboard up to date.")
         await ctx.send(embed=embed)
