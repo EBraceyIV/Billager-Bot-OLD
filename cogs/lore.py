@@ -27,12 +27,14 @@ class Lore(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # Display the requested piece of lore
     @commands.command(name='lore', description="View some enjoyable server lore.",
                       help="This is for lore reading.", aliases=['Lore'])
     async def lore(self, ctx, *, lore_title):
         embed = lore_keeper[lore_title]
         await ctx.send(embed=embed)
 
+    # Add a new piece of lore to the records
     @commands.command(name='addLore', aliases=['AddLore'])
     async def addLore(self, ctx, lore_title: str, *, lore_description: str):
         lore_num = str(random.randint(1000, 9999))
@@ -40,6 +42,7 @@ class Lore(commands.Cog):
         lore_keeper[lore_title] = embed
         await ctx.send(embed=embed)
 
+    # Edit an existing piece of lore
     @commands.command(name='editLore', aliases=['EditLore'])
     async def editLore(self, ctx, lore_title: str, edit_field: str, *, edit: str):
         if lore_title not in lore_keeper:

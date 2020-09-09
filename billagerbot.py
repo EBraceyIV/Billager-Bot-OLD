@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 import TOKEN
 
-#BOT TOKEN
+# BOT TOKEN
 TOKEN = TOKEN.token()
 
 bot = commands.Bot(command_prefix=['bb:', 'BB:', 'Bb:', 'Bb:'], description="Your very good friend, the Billager.")

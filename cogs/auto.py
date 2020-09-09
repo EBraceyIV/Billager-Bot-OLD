@@ -11,10 +11,12 @@ class Auto(commands.Cog):
         # Do not reply to BB's own messages
         if message.author == self.bot.user:
             return
+
         # Reply to the secret word with 1/100 chance
         if 'hog' in message.clean_content.lower():
             if 1 == random.randint(1, 100):
                 await message.channel.send('HYPEROMEGAHOGGERS')
+
         # Make sure commands still get processed
         await self.bot.process_commands(message)
 

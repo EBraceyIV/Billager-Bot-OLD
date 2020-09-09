@@ -15,25 +15,27 @@ monkaGun = '<:monkaGun:650922885627772949>'
 fortCry = '<:fortCry:600190388241694770>'
 
 # mcstatus inits
-server = MinecraftServer.lookup("192.99.4.195:25577") #my minecraft server
+server = MinecraftServer.lookup("192.99.4.195:25577")  # my minecraft server
 
 
 class Basic_Reply(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # This currently serves no real purpose. Just learning the channels and utils functionality.
     @commands.command(name='channels', help='Dev only, does nothing (that you can see).')
     async def channels(self, ctx):
-        # all channels in the guild
+        # All channels in the guild
         for channel in ctx.guild.channels:
             print(channel)
         # Display id of specific channel
         ct = discord.utils.get(ctx.guild.text_channels, name="command-terminal")
         print(str(ct.id) + ' ' + ct.name + ' ' + ct.topic)
 
+    # An early test reply command with an Animal Crossing twist
     @commands.command(name='nook', help='That two-bit Tanooki.')
     async def nook(self, ctx):
-        response = 'I will send Kicks to break Tom Nook\'s kneecaps'
+        response = "I will send Kicks to break Tom Nook's kneecaps."
         await ctx.send(response)
 
     # Basic send a message command
@@ -73,6 +75,7 @@ class Basic_Reply(commands.Cog):
         response = random.choice(willReplies)
         await ctx.send(response)
 
+    # Basic reply using an emote id
     @commands.command(name="dwayne", help='Dwayne himself')
     async def block(self, ctx):
         response = '<:dwayneBlock:578999476824440852>'
@@ -81,9 +84,10 @@ class Basic_Reply(commands.Cog):
     # Provides current player count and latency to the Minecraft server
     @commands.command(name="blocks", help='Minecraft Server Info')
     async def blocks(self, ctx):
+        # Get all of the server information
         status = server.status()
-        # response = ("{0} players were reported in {1} ms from {2}:{3}"
-        #            .format(status.players.online, status.latency, server.host, server.port))
+
+        # Build the embed message using the server query
         embed = discord.Embed(title='Dwayneblock Memorial Minecraft Server',
                               color=0xdd3333,
                               description='{0} Come play with blocks at {1}:{2}'
