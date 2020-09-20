@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+import typing
 import shelve
 import asyncio
 
@@ -30,7 +31,9 @@ class Lore(commands.Cog):
     # Display the requested piece of lore
     @commands.command(name='lore', description="View some enjoyable server lore.",
                       help="This is for lore reading.", aliases=['Lore'])
-    async def lore(self, ctx, *, lore_title):
+    async def lore(self, ctx, *, lore_title: typing.Optional[str] = None):
+        if lore_title is None:
+            lore_title = random.choice(all_lore)
         embed = lore_keeper[lore_title]
         await ctx.send(embed=embed)
 
@@ -96,14 +99,6 @@ class Lore(commands.Cog):
             else:
                 await ctx.send("The lore remains intact.")
 
-    @lore.error
-    async def lore_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            lore_title = random.choice(all_lore)
-            embed = lore_keeper[lore_title]
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send("You really messed something up. This could be a problem.")
 
     @editLore.error
     async def editLore_error(self, ctx, error):

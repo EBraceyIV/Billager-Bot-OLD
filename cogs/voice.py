@@ -3,6 +3,10 @@ from discord.ext import commands
 import asyncio
 from pathlib import Path
 
+# Look in to: TTS
+# TTS -> Given text input, Billager should be able to convert it to spoken words and play it back
+#        Consider reading this: https://elinux.org/RPi_Text_to_Speech_(Speech_Synthesis) for more info at some point
+
 mp3s = ['honk', 'speech', 'short', 'pulp', 'navy']
 vc = 0
 
