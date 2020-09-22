@@ -14,16 +14,19 @@ class Score(commands.Cog):
 
     @commands.command(name="+", help="Add to a user's score.")
     async def plus(self, ctx, num: int, member: discord.Member):
+        # Some in-command error catching, +- will only process integers
         try:
-            print(member.mention + ' +' + str(num))
-            if member.mention not in pmFile:
-                pmFile[member.mention] = num
+            # Prevent users from adding to their own score
+            if str(member.mention) == str(ctx.message.author.mention):
+                await ctx.send("Trying to boost your own numbers? Shameful.")
+                return
             else:
-                pmFile[member.mention] = int(pmFile[member.mention]) + num
-                print(member.mention + ' is up to ' + str(pmFile[member.mention]))
-
-            com_term = self.bot.get_channel(461773779165511681)
-            await com_term.send(str(member.display_name) + ' +' + str(num))
+                if member.mention not in pmFile:
+                    pmFile[member.mention] = num
+                else:
+                    pmFile[member.mention] = int(pmFile[member.mention]) + num
+                com_term = self.bot.get_channel(461773779165511681)
+                await com_term.send(str(member.display_name) + ' +' + str(num))
 
         except ValueError:
             await ctx.send('You can only add numbers' + beefBrain)

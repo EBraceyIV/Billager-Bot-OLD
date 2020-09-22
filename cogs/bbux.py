@@ -1,6 +1,7 @@
 import discord
 import typing
 import random
+import shelve
 from discord.ext import commands
 
 # B·Bux is the specialized Billager prize ticket system
@@ -20,6 +21,12 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Larus_occidentalis_%28Western_Gull%29%2C_Point_Lobos%2C_CA%2C_US_-_May_2013.jpg/1200px-Larus_occidentalis_%28Western_Gull%29%2C_Point_Lobos%2C_CA%2C_US_-_May_2013.jpg",
                       "50 ᘋ",
                       "Common"],
+          "Will's Shoes": [discord.Embed(title="Will's Shoes",
+                                         description="They're worth so little because he owns so many.",
+                                         color=common),
+                           "http://www.fantastischekinderdisco.be/clown_shoes.png",
+                           "2 ᘋ",
+                           "Common"],
           "Coconut": [discord.Embed(title="Coconut",
                                     description="It's a coconut. The coconut is the proud owner of both hair and milk, "
                                           "which qualifies it as a mammal. Deadly when falling from its tropical "
@@ -63,6 +70,8 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                         "Fantasmaglorical"]
           }
 
+bbux_bank = shelve.open("bbux_bank")
+pmFile = shelve.open('plusMinus') #stores the +- scores
 
 class bbux(commands.Cog):
     def __init__(self, bot):
@@ -100,6 +109,22 @@ class bbux(commands.Cog):
         # The fields need to be cleared or each time a prize is displayed it adds another set of the same fields for
         # some reason.
         embed.clear_fields()
+
+    @commands.command(name="bbux")
+    async def bbux(self, ctx):
+        await ctx.send(str(ctx.message.author.name) + ", you have " + str(bbux_bank[ctx.message.author.mention]) +
+                       " ᘋ in your account.")
+
+    @commands.Cog.listener()
+    async def on_command(self, ctx):
+        if ctx.message.author.mention not in list(bbux_bank.keys()):
+            bbux_bank[ctx.message.author.mention] = 20
+        if ctx.message.author.mention not in list(pmFile.keys()):
+            pmFile[ctx.message.author.mention] = 0
+        if pmFile[ctx.message.author.mention] > 2:
+            bbux_bank[ctx.message.author.mention] += 12
+        else:
+            bbux_bank[ctx.message.author.mention] += 10
 
 
 def setup(bot):
