@@ -3,7 +3,7 @@ from discord.ext import commands
 import random
 from mcstatus import MinecraftServer
 
-# define emotes
+# Define emotes
 dwayneBlock = '<:dwayneBlock:578999476824440852>'
 depression = '<:depression:605507923619086349>'
 billagermine = '<:billagermine:679882568740503648>'
@@ -14,7 +14,7 @@ ZBillagerChop = '<a:ZBillagerChop:619169326829928449>'
 monkaGun = '<:monkaGun:650922885627772949>'
 fortCry = '<:fortCry:600190388241694770>'
 
-# mcstatus inits
+# mcstatus init
 server = MinecraftServer.lookup("192.99.4.195:25577")  # my minecraft server
 
 
@@ -23,12 +23,12 @@ class Basic_Reply(commands.Cog):
         self.bot = bot
 
     # This currently serves no real purpose. Just learning the channels and utils functionality.
-    @commands.command(name='channels', help='Dev only, does nothing (that you can see).')
+    @commands.command(name='channels', help='Dev only, does nothing (that you can see).', hidden=True)
     async def channels(self, ctx):
         # All channels in the guild
         for channel in ctx.guild.channels:
             print(channel)
-        # Display id of specific channel
+        # Display id of specific channel, given the name in the guild
         ct = discord.utils.get(ctx.guild.text_channels, name="command-terminal")
         print(str(ct.id) + ' ' + ct.name + ' ' + ct.topic)
 
@@ -46,7 +46,7 @@ class Basic_Reply(commands.Cog):
 
     # Randomly picks a Will-thing to say
     @commands.command(name='will', aliases=['Will'], help='Will Simulator',
-                      description="Billager's best impressions of Will, he's got more than 20!")
+                      description="Billager's many impressions of Will, he's got more than 30!")
     async def will(self, ctx):
         willReplies = ["pepehands " + depression,
                        "oh yeah?",
@@ -59,6 +59,8 @@ class Basic_Reply(commands.Cog):
                        "you know what? i'll take it",
                        "and **LIE**",
                        "c!play surf rock anthology volume 1",
+                       "c!play sounds of the supermarket",
+                       "c!play a girl worth fighting for",
                        monkaGun,
                        "GET IN THE CAR HORATIO",
                        "I can't believe this",
@@ -67,11 +69,18 @@ class Basic_Reply(commands.Cog):
                        "secretly i'm vulnerable and that's why i'm aggressive " + fortCry,
                        "Please bro",
                        "I went to Wendy’s",
+                       "I went to Steak & Shake",
+                       "PLEASE",
                        "And uh",
                        "*one of those wacky purple emotes*",
                        "YES",
                        "HOG",
-                       "it's time to end this"]
+                       "it's time to end this",
+                       "Never say that to me ever again",
+                       "Gachi",
+                       "NICE BOAT",
+                       "I bought more shoes",
+                       "Dunston checks in"]
         response = random.choice(willReplies)
         await ctx.send(response)
 

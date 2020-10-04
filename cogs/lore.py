@@ -28,12 +28,11 @@ class Lore(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # Display the requested piece of lore
+    # Display the requested piece of lore, or a random piece if none is specified
     @commands.command(name='lore', description="View some enjoyable server lore.",
                       help="This is for lore reading.", aliases=['Lore'])
-    async def lore(self, ctx, *, lore_title: typing.Optional[str] = None):
-        if lore_title is None:
-            lore_title = random.choice(all_lore)
+    async def lore(self, ctx, *, lore_title: typing.Optional[str]):
+        lore_title = random.choice(all_lore) if lore_title is None else lore_title
         embed = lore_keeper[lore_title]
         await ctx.send(embed=embed)
 
@@ -41,7 +40,9 @@ class Lore(commands.Cog):
     @commands.command(name='addLore', aliases=['AddLore'])
     async def addLore(self, ctx, lore_title: str, *, lore_description: str):
         lore_num = str(random.randint(1000, 9999))
+        # Pass the relevant info to the embed builder
         embed = embed_init(lore_title, lore_description, lore_num)
+        # The lore is stored as the type embed in the shelf file
         lore_keeper[lore_title] = embed
         await ctx.send(embed=embed)
 
@@ -66,21 +67,27 @@ class Lore(commands.Cog):
             embed.description = edit
             lore_keeper[lore_title] = embed
         else:
-            await ctx.send('That\'s not an editable field for the lore.')
+            await ctx.send("That's not an editable field for the lore.")
             return
 
         await ctx.send(embed=embed)
 
+    # Remove a piece of lore from the records
     @commands.command(name="killLore", aliases=['KillLore'],
                       help="Remove a piece of lore from the records.",
                       description="Only the user who issues this command can reply to confirm.")
     async def killLore(self, ctx, lore_title):
+        # Check to see if the lore exists
         if lore_title not in lore_keeper:
-            await ctx.send('Can\'t find that lore!')
+            await ctx.send("Can't find that lore!")
             return
+
+        # Ask for confirmation to delete the lore
         await ctx.send("Are you sure you want to destroy the " + lore_title + " lore? A simple yes or no will do.")
 
+        # The yes/no check for the confirmation message used in wait_for below
         def check(message):
+            # Only allow the user who made the request to confirm the request
             if message.content.lower() == "yes" and ctx.message.author == message.author:
                 return "yes"
             elif message.content.lower() == "no" and ctx.message.author == message.author:
@@ -88,18 +95,21 @@ class Lore(commands.Cog):
             else:
                 return False
 
+        # Process the confirmation message
         try:
+            # Give the user 5 seconds to confirm according to the check function
             kill_confirm = await self.bot.wait_for('message', timeout=5.0, check=check)
-        except asyncio.TimeoutError:
+        except asyncio.TimeoutError:  # Inform user they ran out of time to confirm
             await ctx.send("This is taking too long. Next time, be ready to pull the trigger.")
         else:
+            # Delete the lore if confirmation check is passed
             if kill_confirm.content == "yes":
                 del lore_keeper[lore_title]
                 await ctx.send("The deed is done.")
             else:
                 await ctx.send("The lore remains intact.")
 
-
+    # Send a "relevant" error message if there was a problem editing lore
     @editLore.error
     async def editLore_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
@@ -107,6 +117,7 @@ class Lore(commands.Cog):
         else:
             await ctx.send("You really messed something up. This could be a problem.")
 
+    # Send a "relevant" error message if there was a problem adding lore
     @addLore.error
     async def addLore_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):

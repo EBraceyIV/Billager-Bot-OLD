@@ -15,6 +15,7 @@ perplexing = 0xf0ff00
 mystifying = 0xff4d00
 fantasmaglorical = 0x00ecff
 
+# List of available prizes
 PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                                     description="Flying coast rat.",
                                     color=common),
@@ -70,14 +71,17 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                         "Fantasmaglorical"]
           }
 
+# Open the bbux bank for reference in commands
 bbux_bank = shelve.open("bbux_bank")
 pmFile = shelve.open('plusMinus') #stores the +- scores
+
 
 class bbux(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     # Just a test command to show off the form of a prize embed
+    '''
     @commands.command(name='coconut')
     async def coconut(self, ctx):
         embed = discord.Embed(title="Coconut",
@@ -92,13 +96,13 @@ class bbux(commands.Cog):
         embed.add_field(name="Quality", value="Peculiar")
         embed.set_footer(text="\"B·Bux: The fun way to waste time!\"")
         await ctx.send(embed=embed)
+    '''
 
     # Displays the information regarding a specified prize, or random one if no input is given
-    @commands.command(name="prize")
-    async def prize(self, ctx, *, item: typing.Optional[str] = None):
+    @commands.command(name="prize", help="See the details on a special BBux prize!")
+    async def prize(self, ctx, *, item: typing.Optional[str]):
         # Assign a random prize to display if a specific was not asked for
-        if item is None:
-            item = random.choice(list(PRIZES.keys()))
+        item = random.choice(list(PRIZES.keys())) if item is None else item
         # Build the embed using the values from the list in the value of the key of the prize name
         embed = PRIZES[item][0]
         embed.set_image(url=PRIZES[item][1])
@@ -106,25 +110,36 @@ class bbux(commands.Cog):
         embed.add_field(name="Quality", value=PRIZES[item][3])
         embed.set_footer(text="\"B·Bux: The fun way to waste time!\"")
         await ctx.send(embed=embed)
-        # The fields need to be cleared or each time a prize is displayed it adds another set of the same fields for
-        # some reason.
+        # The fields need to be cleared each time a prize is displayed or the command adds another set of the same
+        # embed fields for some reason.
         embed.clear_fields()
 
-    @commands.command(name="bbux")
+    # Tell a user what their current supply of BBux is
+    @commands.command(name="bbux", help="Check your current BBux balance.")
     async def bbux(self, ctx):
         await ctx.send(str(ctx.message.author.name) + ", you have " + str(bbux_bank[ctx.message.author.mention]) +
                        " ᘋ in your account.")
 
+    # Award users with some BBux every time they use a Billager Bot command
+    # TODO: See if there is some way of excluding certain commands from invoking this
+    # TODO: FIX THE PICKLE ERROR!!! When something scares the bbux_bank file, it just stops working
     @commands.Cog.listener()
     async def on_command(self, ctx):
-        if ctx.message.author.mention not in list(bbux_bank.keys()):
-            bbux_bank[ctx.message.author.mention] = 20
-        if ctx.message.author.mention not in list(pmFile.keys()):
-            pmFile[ctx.message.author.mention] = 0
-        if pmFile[ctx.message.author.mention] > 2:
-            bbux_bank[ctx.message.author.mention] += 12
-        else:
-            bbux_bank[ctx.message.author.mention] += 10
+        try:
+            # Give every user a starting balance of 20 BBux to start
+            if ctx.message.author.mention not in list(bbux_bank.keys()):
+                bbux_bank[ctx.message.author.mention] = 20
+            # Initialize the user's score if they don't already have one
+            if ctx.message.author.mention not in list(pmFile.keys()):
+                pmFile[ctx.message.author.mention] = 0
+            # Adjust the BBux given based on user score
+            # Higher score means more BBux, reward good behavior, balancing TBD
+            if pmFile[ctx.message.author.mention] > 2:
+                bbux_bank[ctx.message.author.mention] += 12
+            else:
+                bbux_bank[ctx.message.author.mention] += 10
+        except:
+            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
 
 def setup(bot):

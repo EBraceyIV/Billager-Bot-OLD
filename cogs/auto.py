@@ -6,6 +6,7 @@ class Auto(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # Check every message that comes through and perform a hog-check
     @commands.Cog.listener()
     async def on_message(self, message):
         # Do not reply to BB's own messages
@@ -13,9 +14,8 @@ class Auto(commands.Cog):
             return
 
         # Reply to the secret word with 1/100 chance
-        if 'hog' in message.clean_content.lower():
-            if 1 == random.randint(1, 100):
-                await message.channel.send('HYPEROMEGAHOGGERS')
+        if 'hog' in message.clean_content.lower() and 1 == random.randint(1, 100):
+            await message.channel.send('HYPEROMEGAHOGGERS')
 
 
 def setup(bot):
