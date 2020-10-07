@@ -4,7 +4,7 @@ import shelve
 import typing
 
 # shelve init
-pmFile = shelve.open('plusMinus') #stores the +- scores
+plusMinus = shelve.open('plusMinus') #stores the +- scores
 
 # This is here to use
 beefBrain = '<:BeefBrain:631694337549271050>'
@@ -25,10 +25,10 @@ class Score(commands.Cog):
                 await ctx.send("Trying to boost your own numbers? Shameful.")
                 return
             else:
-                if member.mention not in pmFile:
-                    pmFile[member.mention] = num
+                if member.mention not in plusMinus:
+                    plusMinus[member.mention] = num
                 else:
-                    pmFile[member.mention] = int(pmFile[member.mention]) + num
+                    plusMinus[member.mention] = int(plusMinus[member.mention]) + num
                 # com_term = self.bot.get_channel(461773779165511681)
                 await ctx.send(str(member.display_name) + ' +' + str(num))
 
@@ -42,11 +42,11 @@ class Score(commands.Cog):
         # Some in-command error catching, +- will only process integers
         try:
             print(member.mention + ' -' + str(num))
-            if member.mention not in pmFile:
-                pmFile[member.mention] = -num
+            if member.mention not in plusMinus:
+                plusMinus[member.mention] = -num
             else:
-                pmFile[member.mention] = int(pmFile[member.mention]) - num
-                print(member.mention + ' is up to ' + str(pmFile[member.mention]))
+                plusMinus[member.mention] = int(plusMinus[member.mention]) - num
+                print(member.mention + ' is up to ' + str(plusMinus[member.mention]))
 
             # com_term = self.bot.get_channel(461773779165511681)
             await ctx.send(str(member.display_name) + ' -' + str(num))
@@ -58,10 +58,10 @@ class Score(commands.Cog):
     @commands.command(name="score", aliases=['Score', 'SCORE'], help="List a user's +- score.")
     async def score(self, ctx, member: discord.Member):
         # Initialize user's score if they don't already have one
-        if member.mention not in pmFile:
-            pmFile[member.mention] = int(0)
-        print(member.display_name + ' is at a ' + str(pmFile[member.mention]))
-        await ctx.send(member.display_name + ' is at a ' + str(pmFile[member.mention]))
+        if member.mention not in plusMinus:
+            plusMinus[member.mention] = int(0)
+        print(member.display_name + ' is at a ' + str(plusMinus[member.mention]))
+        await ctx.send(member.display_name + ' is at a ' + str(plusMinus[member.mention]))
 
     # Show a scoreboard from highest to lowest for all users with a score
     @commands.command(name="scoreboard", aliases=["Scoreboard"], help="Scoreboard of the highest and lowest scores.")
@@ -70,7 +70,7 @@ class Score(commands.Cog):
         embed = discord.Embed(title="Scoreboard")
         desc = ""
         # Sort the current user scores from highest to lowest
-        score_sorted = sorted(pmFile.items(), key=lambda x: x[1])
+        score_sorted = sorted(plusMinus.items(), key=lambda x: x[1])
         # Iterate through the scores and build the embed content
         for score in score_sorted:
             # Here "score" is a tuple, containing the user and score, adding each to a new line

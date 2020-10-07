@@ -18,7 +18,7 @@ fortCry = '<:fortCry:600190388241694770>'
 server = MinecraftServer.lookup("192.99.4.195:25577")  # my minecraft server
 
 
-class Basic_Reply(commands.Cog):
+class BasicReply(commands.Cog, name="Basic Replies"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -109,4 +109,4 @@ class Basic_Reply(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Basic_Reply(bot))
+    bot.add_cog(BasicReply(bot))

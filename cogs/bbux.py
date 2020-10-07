@@ -73,10 +73,10 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
 
 # Open the bbux bank for reference in commands
 bbux_bank = shelve.open("bbux_bank")
-pmFile = shelve.open('plusMinus') #stores the +- scores
+plusMinus = shelve.open('plusMinus')  # stores the +- scores
 
 
-class bbux(commands.Cog):
+class BBux(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -117,12 +117,12 @@ class bbux(commands.Cog):
     # Tell a user what their current supply of BBux is
     @commands.command(name="bbux", help="Check your current BBux balance.")
     async def bbux(self, ctx):
-        await ctx.send(str(ctx.message.author.name) + ", you have " + str(bbux_bank[ctx.message.author.mention]) +
-                       " ᘋ in your account.")
+        # Load the user's balance
+        balance = str(bbux_bank[ctx.message.author.mention])
+        await ctx.send(str(ctx.message.author.name) + ", you have {0} ᘋ in your account.".format(balance))
 
     # Award users with some BBux every time they use a Billager Bot command
     # TODO: See if there is some way of excluding certain commands from invoking this
-    # TODO: FIX THE PICKLE ERROR!!! When something scares the bbux_bank file, it just stops working
     @commands.Cog.listener()
     async def on_command(self, ctx):
         try:
@@ -130,17 +130,17 @@ class bbux(commands.Cog):
             if ctx.message.author.mention not in list(bbux_bank.keys()):
                 bbux_bank[ctx.message.author.mention] = 20
             # Initialize the user's score if they don't already have one
-            if ctx.message.author.mention not in list(pmFile.keys()):
-                pmFile[ctx.message.author.mention] = 0
+            if ctx.message.author.mention not in list(plusMinus.keys()):
+                plusMinus[ctx.message.author.mention] = 0
             # Adjust the BBux given based on user score
             # Higher score means more BBux, reward good behavior, balancing TBD
-            if pmFile[ctx.message.author.mention] > 2:
+            if plusMinus[ctx.message.author.mention] > 2:
                 bbux_bank[ctx.message.author.mention] += 12
             else:
                 bbux_bank[ctx.message.author.mention] += 10
         except:
-            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+            print("Some kind of bbux problem has occurred.")
 
 
 def setup(bot):
-    bot.add_cog(bbux(bot))
+    bot.add_cog(BBux(bot))
