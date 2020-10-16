@@ -4,7 +4,7 @@ import shelve
 import typing
 
 # shelve init
-plusMinus = shelve.open('plusMinus') #stores the +- scores
+plusMinus = shelve.open('plusMinus') # stores the +- scores
 
 # This is here to use
 beefBrain = '<:BeefBrain:631694337549271050>'
