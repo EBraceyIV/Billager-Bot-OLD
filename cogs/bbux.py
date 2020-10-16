@@ -93,8 +93,20 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
           }
 
 # Open the bbux bank for reference in commands
-
 plusMinus = shelve.open('plusMinus')  # stores the +- scores
+
+
+def bank(action, member, amount):
+    bbux_bank = shelve.open("bbux_bank")
+    if action == "add":
+        bbux_bank[member] += amount
+        return bbux_bank[member]
+    elif action == "retrieve":
+        return bbux_bank[member]
+    elif action == "remove":
+        bbux_bank[member] -= amount
+        return bbux_bank[member]
+    bbux_bank.close()
 
 
 class BBux(commands.Cog):
@@ -139,35 +151,29 @@ class BBux(commands.Cog):
     @commands.command(name="bbux", help="Check your current BBux balance.")
     async def bbux(self, ctx):
         # Load the user's balance
-        print(ctx.message.author)
         print(ctx.message.author.mention)
-        bbux_bank = shelve.open("bbux_bank")
-        print(bbux_bank[ctx.message.author.mention])
         await ctx.send(ctx.message.author.name + ", you have {0} ᘋ in your account."
-                       .format(str(bbux_bank[ctx.message.author.mention])))
-        bbux_bank.close()
+                       .format(str(bank("retrieve", ctx.message.author.mention, None))))
 
     @commands.cooldown(rate=3, per=60 * 5, type=commands.BucketType.member)
     @commands.command(name="skeeball", help="Play a game of Skee-Ball and win some BBux.")
     async def skeeball(self, ctx):
-        skee_points = [10, 20, 30, 40, 50, 100]
-        skee_score = sum(random.choices(skee_points, weights=(30, 40, 25, 20, 10, 5), k=9))
+        # Generate the skee-ball score. Nine balls are "thrown" and points are weighted to simulate accuracy.
+        skee_score = sum(random.choices([10, 20, 30, 40, 50, 100], weights=(30, 40, 25, 20, 10, 5), k=9))
+        # Navigate edge cases that the lambda is not designed well for
+        # Score simulation showed: min. around 100, max. around 650, avg. around 250
         if skee_score < 150:
-            bbux_won = 50
-        elif skee_score < 200:
             bbux_won = 100
-        elif skee_score < 250:
-            bbux_won = 250
-        elif skee_score < 350:
-            bbux_won = 400
-        elif skee_score < 450:
-            bbux_won = 1000
-        else:
+        elif skee_score > 450:
             bbux_won = 4000
-        bbux_bank = shelve.open("bbux_bank")
-        bbux_bank[ctx.message.author.mention] += bbux_won
-        await ctx.send("You scored {0} on the Skee-Ball machine! You've earned {1} ᘋ.".format(skee_score, bbux_won))
-        bbux_bank.close()
+        else:
+            # Calculate prize output according to a cubic function I designed that is based on score simulations I ran
+            skee_prize = lambda x: 0.0004 * pow((x - 252), 3) + 300
+            bbux_won = int(skee_prize(skee_score))
+        # Call the bank to adjust balance
+        bank("add", ctx.message.author.mention, bbux_won)
+        await ctx.send("You scored {0} on Billager's Big Baller Skee-Ball machine! You've earned {1} ᘋ."
+                       .format(skee_score, bbux_won))
 
     '''
     # Award users with some BBux every time they use a Billager Bot command

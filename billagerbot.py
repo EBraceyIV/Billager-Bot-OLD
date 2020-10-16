@@ -7,8 +7,7 @@ import shelve
 # BOT TOKEN
 TOKEN = TOKEN.token()
 
-# bot = commands.Bot(command_prefix=['bb:', 'BB:', 'Bb:', 'Bb:'], description="Your very good friend, the Billager.")
-bot = commands.Bot(command_prefix=['tb:'], description="Your very good friend, the Billager.") # Toggle on for testing
+bot = commands.Bot(command_prefix=['bb:', 'BB:', 'Bb:', 'Bb:'], description="Your very good friend, the Billager.")
 
 
 # Conduct on startup
