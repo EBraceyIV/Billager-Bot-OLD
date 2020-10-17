@@ -104,7 +104,7 @@ def bank(action, member, amount):
     elif action == "retrieve":
         return bbux_bank[member]
     elif action == "remove":
-        bbux_bank[member] -= amount
+        bbux_bank[member] -= int(amount)
         return bbux_bank[member]
     bbux_bank.close()
 
@@ -113,29 +113,26 @@ class BBux(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # Just a test command to show off the form of a prize embed
-    '''
-    @commands.command(name='coconut')
-    async def coconut(self, ctx):
-        embed = discord.Embed(title="Coconut",
-                              description="It's a coconut. The coconut is the proud owner of both hair and milk, "
-                                          "which qualifies it as a mammal. Deadly when falling from it's tropical "
-                                          "treetop abode, the coconut also demonstrates the killer instinct necessary "
-                                          "for survival in the animal kingdom. This may be your prize but make no "
-                                          "mistake, you do not own the coconut. Nobody should dare to try.",
-                              color=peculiar)
-        embed.set_image(url="https://d3cizcpymoenau.cloudfront.net/images/28285/SIL_CoconutProducts_Cracked_05.png")
-        embed.add_field(name="Value", value="200 ᘋ")
-        embed.add_field(name="Quality", value="Peculiar")
-        embed.set_footer(text="\"B·Bux: The fun way to waste time!\"")
+    # Displays a list of the available prizes
+    @commands.command(name="prizes", help="See a list of everything on the prize shelf!")
+    async def prizes(self, ctx):
+        prize_names = list(PRIZES.keys())
+        embed = discord.Embed(title="Prize Shelf",
+                              description="Come one, come all. See the bounty that awaits you on B. Bot's prize shelf!",
+                              color=0xfffffe)
+        for prize in prize_names:
+            embed.add_field(name=prize, value=PRIZES[prize][2] + " ᘋ")
         await ctx.send(embed=embed)
-    '''
 
     # Displays the information regarding a specified prize, or random one if no input is given
     @commands.command(name="prize", help="See the details on a special BBux prize!")
     async def prize(self, ctx, *, item: typing.Optional[str]):
         # Assign a random prize to display if a specific was not asked for
         item = random.choice(list(PRIZES.keys())) if item is None else item
+        # Check that the requested item exists
+        if item not in list(PRIZES.keys()):
+            await ctx.send("That prize does not exist, much like my interest in your nonsensical request.")
+            return
         # Build the embed using the values from the list in the value of the key of the prize name
         embed = PRIZES[item][0]
         embed.set_image(url=PRIZES[item][1])
@@ -175,24 +172,19 @@ class BBux(commands.Cog):
         await ctx.send("You scored {0} on Billager's Big Baller Skee-Ball machine! You've earned {1} ᘋ."
                        .format(skee_score, bbux_won))
 
-    '''
-    # Award users with some BBux every time they use a Billager Bot command
-    # TODO: See if there is some way of excluding certain commands from invoking this
-    @commands.Cog.listener()
-    async def on_command(self, ctx):
-        # Give every user a starting balance of 20 BBux to start
-        if ctx.message.author.mention not in list(bbux_bank.keys()):
-            bbux_bank[str(ctx.message.author.id)] = 20
-        # Initialize the user's score if they don't already have one
-        if ctx.message.author.mention not in list(plusMinus.keys()):
-            plusMinus[ctx.message.author.mention] = 0
-        # Adjust the BBux given based on user score
-        # Higher score means more BBux, reward good behavior, balancing TBD
-        if plusMinus[ctx.message.author.mention] > 2:
-            bbux_bank[str(ctx.message.author.id)] += 12
+    @commands.command(name="redeem", help="Redeem your BBux for a prize!")
+    async def redeem(self, ctx, prize):
+        if prize not in list(PRIZES.keys()):
+            await ctx.send("That prize does not exist, much like my interest in your nonsensical request.")
+            return
+        balance = bank("retrieve", ctx.message.author.mention, None)
+        print(balance)
+        if balance < int(PRIZES[prize][2]):
+            await ctx.send("You're too poor. Stop that.")
         else:
-            bbux_bank[str(ctx.message.author.id)] += 10
-    '''
+            bank("remove", ctx.message.author.mention, PRIZES[prize][2])
+            await ctx.send("You've redeemed {0} or your BBux for this wonderful item: {1}"
+                           .format(PRIZES[prize][2], prize) + "\n" + "Congratulations on your shiny new prize!")
 
     @skeeball.error
     async def skeeball_error(self, ctx, error):

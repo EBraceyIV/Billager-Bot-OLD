@@ -20,7 +20,6 @@ async def on_ready():
     for guild in bot.guilds:
         for member in guild.members:
             if member.mention not in bbux_bank:
-                print(member.mention)
                 bbux_bank[member.mention] = 0
     bbux_bank.close()
 
