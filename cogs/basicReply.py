@@ -82,7 +82,8 @@ class BasicReply(commands.Cog, name="Basic Replies"):
                        "I bought more shoes",
                        "Dunston checks in",
                        "I cannot believe you",
-                       "I will remember this"]
+                       "I will remember this",
+                       "I don't remember the touch of a woman " + fortCry]
         response = random.choice(willReplies)
         await ctx.send(response)
 

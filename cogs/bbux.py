@@ -92,9 +92,6 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                         "Fantasmaglorical"]
           }
 
-# Open the bbux bank for reference in commands
-plusMinus = shelve.open('plusMinus')  # stores the +- scores
-
 
 def bank(action, member, amount):
     bbux_bank = shelve.open("bbux_bank")
@@ -107,6 +104,12 @@ def bank(action, member, amount):
         bbux_bank[member] -= int(amount)
         return bbux_bank[member]
     bbux_bank.close()
+
+
+def collection(action, member, prize):
+    member_collections = shelve.open("member_collection")
+    if action == "add":
+        return
 
 
 class BBux(commands.Cog):
@@ -146,11 +149,28 @@ class BBux(commands.Cog):
 
     # Tell a user what their current supply of BBux is
     @commands.command(name="bbux", help="Check your current BBux balance.")
-    async def bbux(self, ctx):
-        # Load the user's balance
-        print(ctx.message.author.mention)
-        await ctx.send(ctx.message.author.name + ", you have {0} ᘋ in your account."
-                       .format(str(bank("retrieve", ctx.message.author.mention, None))))
+    async def bbux(self, ctx, action: typing.Optional[str], prize: typing.Optional[str]):
+        # Load the user's balance if no arguments are passed
+        if action is None:
+            await ctx.send(ctx.message.author.name + ", you have {0} ᘋ in your account."
+                           .format(str(bank("retrieve", ctx.message.author.mention, None))))
+        # Process a redemption request for a prize
+        elif action == "buy":
+            # Check if the requested prize exists
+            if prize not in list(PRIZES.keys()):
+                await ctx.send("That prize does not exist, much like my interest in your nonsensical request.")
+                return
+            # Check to see if the user has enough BBux to make the transaction
+            if bank("retrieve", ctx.message.author.mention, None) < int(PRIZES[prize][2]):
+                await ctx.send("You're too poor. Stop that.")
+            else:
+                # Conduct the transaction
+                bank("remove", ctx.message.author.mention, PRIZES[prize][2])
+                await ctx.send("You've redeemed {0} or your BBux for this wonderful item: {1}"
+                               .format(PRIZES[prize][2], prize) + "\n" + "Congratulations on your shiny new prize!")
+        # Invalid action reply
+        else:
+            await ctx.send("That's not an option. You can buy or pawn.")
 
     @commands.cooldown(rate=3, per=60 * 5, type=commands.BucketType.member)
     @commands.command(name="skeeball", help="Play a game of Skee-Ball and win some BBux.")
@@ -171,20 +191,6 @@ class BBux(commands.Cog):
         bank("add", ctx.message.author.mention, bbux_won)
         await ctx.send("You scored {0} on Billager's Big Baller Skee-Ball machine! You've earned {1} ᘋ."
                        .format(skee_score, bbux_won))
-
-    @commands.command(name="redeem", help="Redeem your BBux for a prize!")
-    async def redeem(self, ctx, prize):
-        if prize not in list(PRIZES.keys()):
-            await ctx.send("That prize does not exist, much like my interest in your nonsensical request.")
-            return
-        balance = bank("retrieve", ctx.message.author.mention, None)
-        print(balance)
-        if balance < int(PRIZES[prize][2]):
-            await ctx.send("You're too poor. Stop that.")
-        else:
-            bank("remove", ctx.message.author.mention, PRIZES[prize][2])
-            await ctx.send("You've redeemed {0} or your BBux for this wonderful item: {1}"
-                           .format(PRIZES[prize][2], prize) + "\n" + "Congratulations on your shiny new prize!")
 
     @skeeball.error
     async def skeeball_error(self, ctx, error):
