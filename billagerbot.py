@@ -17,11 +17,15 @@ async def on_ready():
 
     # Initialize the BBux Bank (maybe prevent pickle error)
     bbux_bank = shelve.open("bbux_bank")
+    member_collections = shelve.open("member_collection")
     for guild in bot.guilds:
         for member in guild.members:
             if member.mention not in bbux_bank:
                 bbux_bank[member.mention] = 0
+            if member.mention not in member_collections:
+                member_collections[member.mention] = {}
     bbux_bank.close()
+    member_collections.close()
 
     # Load each cog included in the "cogs" directory
     for cog in os.listdir("cogs"):

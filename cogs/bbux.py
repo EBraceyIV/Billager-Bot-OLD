@@ -105,20 +105,27 @@ def bank(action, member, amount):
         return bbux_bank[member]
     bbux_bank.close()
 
-
+### THIS DOES NOT WORK AT ALL YET
 def collection(action, member, prize):
     member_collections = shelve.open("member_collection")
     if action == "add":
-        if prize not in list(member_collections[member].keys()):
-            member_collections[member][prize] = 1
-        else:
+        print("Check")
+        if prize in list(member_collections[member].keys()):
             member_collections[member][prize] += 1
+        else:
+            temp = member_collections[member]
+            temp.update({prize: 1})
+            member_collections[member] = temp
         return
     elif action == "remove":
         return
     elif action == "retrieve":
+        print(member_collections[member])
         print(member_collections[member][prize])
-        # return member_collections[member][prize]
+        print(list(member_collections[member].keys()))
+        if prize in list(member_collections[member].keys()):
+            print("BONGO")
+    member_collections.close()
 
 
 class BBux(commands.Cog):
@@ -127,14 +134,8 @@ class BBux(commands.Cog):
 
     # Displays a list of the available prizes
     @commands.command(name="prizes", help="See a list of everything on the prize shelf!")
-    async def prizes(self, ctx):
-        prize_names = list(PRIZES.keys())
-        embed = discord.Embed(title="Prize Shelf",
-                              description="Come one, come all. See the bounty that awaits you on B. Bot's prize shelf!",
-                              color=0xfffffe)
-        for prize in prize_names:
-            embed.add_field(name=prize, value=PRIZES[prize][2] + " ᘋ")
-        await ctx.send(embed=embed)
+    async def prizes(self, ctx, prize):
+        collection("retrieve", ctx.message.author.mention, prize)
 
     # Displays the information regarding a specified prize, a list of all prizes, or a random prize if no input is given
     @commands.command(name="prize", help="See the details on a special BBux prize!")
@@ -188,6 +189,7 @@ class BBux(commands.Cog):
             else:
                 # Conduct the transaction
                 bank("remove", ctx.message.author.mention, PRIZES[prize][2])
+                collection("add", ctx.message.author.mention, prize)
                 await ctx.send("You've redeemed {0} of your BBux for this wonderful item: {1}"
                                .format(PRIZES[prize][2], prize) + "\n" + "Congratulations on your shiny new prize!")
         # Invalid action reply
