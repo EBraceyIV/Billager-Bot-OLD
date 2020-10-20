@@ -109,7 +109,16 @@ def bank(action, member, amount):
 def collection(action, member, prize):
     member_collections = shelve.open("member_collection")
     if action == "add":
+        if prize not in list(member_collections[member].keys()):
+            member_collections[member][prize] = 1
+        else:
+            member_collections[member][prize] += 1
         return
+    elif action == "remove":
+        return
+    elif action == "retrieve":
+        print(member_collections[member][prize])
+        # return member_collections[member][prize]
 
 
 class BBux(commands.Cog):
@@ -127,11 +136,24 @@ class BBux(commands.Cog):
             embed.add_field(name=prize, value=PRIZES[prize][2] + " ᘋ")
         await ctx.send(embed=embed)
 
-    # Displays the information regarding a specified prize, or random one if no input is given
+    # Displays the information regarding a specified prize, a list of all prizes, or a random prize if no input is given
     @commands.command(name="prize", help="See the details on a special BBux prize!")
     async def prize(self, ctx, *, item: typing.Optional[str]):
         # Assign a random prize to display if a specific was not asked for
         item = random.choice(list(PRIZES.keys())) if item is None else item
+
+        # Display full prize list
+        if item.lower() == "all":
+            prize_names = list(PRIZES.keys())
+            embed = discord.Embed(title="Prize Shelf",
+                                  description="Come one, come all. "
+                                              "See the bounty that awaits you on B. Bot's prize shelf!",
+                                  color=0xfffffe)
+            for prize in prize_names:
+                embed.add_field(name=prize, value=PRIZES[prize][2] + " ᘋ")
+            await ctx.send(embed=embed)
+            return
+
         # Check that the requested item exists
         if item not in list(PRIZES.keys()):
             await ctx.send("That prize does not exist, much like my interest in your nonsensical request.")
@@ -149,13 +171,13 @@ class BBux(commands.Cog):
 
     # Tell a user what their current supply of BBux is
     @commands.command(name="bbux", help="Check your current BBux balance.")
-    async def bbux(self, ctx, action: typing.Optional[str], prize: typing.Optional[str]):
+    async def bbux(self, ctx, action: typing.Optional[str], *, prize: typing.Optional[str]):
         # Load the user's balance if no arguments are passed
         if action is None:
             await ctx.send(ctx.message.author.name + ", you have {0} ᘋ in your account."
                            .format(str(bank("retrieve", ctx.message.author.mention, None))))
         # Process a redemption request for a prize
-        elif action == "buy":
+        elif action.lower() == "buy":
             # Check if the requested prize exists
             if prize not in list(PRIZES.keys()):
                 await ctx.send("That prize does not exist, much like my interest in your nonsensical request.")
@@ -166,7 +188,7 @@ class BBux(commands.Cog):
             else:
                 # Conduct the transaction
                 bank("remove", ctx.message.author.mention, PRIZES[prize][2])
-                await ctx.send("You've redeemed {0} or your BBux for this wonderful item: {1}"
+                await ctx.send("You've redeemed {0} of your BBux for this wonderful item: {1}"
                                .format(PRIZES[prize][2], prize) + "\n" + "Congratulations on your shiny new prize!")
         # Invalid action reply
         else:
