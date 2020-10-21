@@ -108,10 +108,11 @@ def bank(action, member, amount):
 
 # Just need to implement the removal feature
 def collection(action, member, prize):
+    # Making changes using update() here only works when using a temporary dict to update the value, apparently
     member_collections = shelve.open("member_collection")
+
     # Handle adding a new or duplicate prize to a user's collection
     if action == "add":
-        # Making additions using update() only works when using a temporary dict to update the value, apparently
         # Handle adding duplicates first, other wise add as new prize
         if prize in list(member_collections[member].keys()):
             temp = member_collections[member]
@@ -123,7 +124,14 @@ def collection(action, member, prize):
             member_collections[member] = temp
         return
     elif action == "remove":
-
+        if member_collections[member][prize] > 1:
+            temp = member_collections[member]
+            temp.update({prize: member_collections[member][prize] - 1})
+            member_collections[member] = temp
+        else:
+            temp = member_collections[member]
+            del temp[prize]
+            member_collections[member] = temp
         return
     # Return all prizes in a user's collection
     elif action == "retrieve":
