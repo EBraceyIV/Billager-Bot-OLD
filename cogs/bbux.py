@@ -105,13 +105,18 @@ def bank(action, member, amount):
         return bbux_bank[member]
     bbux_bank.close()
 
-### THIS DOES NOT WORK AT ALL YET
+
+# This sort of works so far
 def collection(action, member, prize):
     member_collections = shelve.open("member_collection")
+    # Handle adding a new or duplicate prize to a user's collection
     if action == "add":
-        print("Check")
+        # Making additions using update() only works when using a temporary dict to update the value, apparently
+        # Handle adding duplicates first, other wise add as new prize
         if prize in list(member_collections[member].keys()):
-            member_collections[member][prize] += 1
+            temp = member_collections[member]
+            temp.update({prize: member_collections[member][prize] + 1})
+            member_collections[member] = temp
         else:
             temp = member_collections[member]
             temp.update({prize: 1})
@@ -120,11 +125,7 @@ def collection(action, member, prize):
     elif action == "remove":
         return
     elif action == "retrieve":
-        print(member_collections[member])
-        print(member_collections[member][prize])
-        print(list(member_collections[member].keys()))
-        if prize in list(member_collections[member].keys()):
-            print("BONGO")
+        return list(member_collections[member].keys())
     member_collections.close()
 
 
@@ -133,9 +134,10 @@ class BBux(commands.Cog):
         self.bot = bot
 
     # Displays a list of the available prizes
-    @commands.command(name="prizes", help="See a list of everything on the prize shelf!")
-    async def prizes(self, ctx, prize):
-        collection("retrieve", ctx.message.author.mention, prize)
+    @commands.command(name="prizes", help="See a list of everything in your prize collection!")
+    async def prizes(self, ctx):
+        prizes = collection("retrieve", ctx.message.author.mention, prize)
+        await ctx.send("You own: " + str(prizes))
 
     # Displays the information regarding a specified prize, a list of all prizes, or a random prize if no input is given
     @commands.command(name="prize", help="See the details on a special BBux prize!")
