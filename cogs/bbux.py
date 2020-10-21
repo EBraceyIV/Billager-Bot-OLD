@@ -106,7 +106,7 @@ def bank(action, member, amount):
     bbux_bank.close()
 
 
-# This sort of works so far
+# Just need to implement the removal feature
 def collection(action, member, prize):
     member_collections = shelve.open("member_collection")
     # Handle adding a new or duplicate prize to a user's collection
@@ -123,7 +123,9 @@ def collection(action, member, prize):
             member_collections[member] = temp
         return
     elif action == "remove":
+
         return
+    # Return all prizes in a user's collection
     elif action == "retrieve":
         return list(member_collections[member].keys())
     member_collections.close()
@@ -136,7 +138,7 @@ class BBux(commands.Cog):
     # Displays a list of the available prizes
     @commands.command(name="prizes", help="See a list of everything in your prize collection!")
     async def prizes(self, ctx):
-        prizes = collection("retrieve", ctx.message.author.mention, prize)
+        prizes = collection("retrieve", ctx.message.author.mention, None)
         await ctx.send("You own: " + str(prizes))
 
     # Displays the information regarding a specified prize, a list of all prizes, or a random prize if no input is given
@@ -194,6 +196,20 @@ class BBux(commands.Cog):
                 collection("add", ctx.message.author.mention, prize)
                 await ctx.send("You've redeemed {0} of your BBux for this wonderful item: {1}"
                                .format(PRIZES[prize][2], prize) + "\n" + "Congratulations on your shiny new prize!")
+        elif action.lower() == "pawn":
+            # Check if the requested prize exists
+            if prize not in list(PRIZES.keys()):
+                await ctx.send("That prize does not exist, much like my interest in your nonsensical request.")
+                return
+            member_prizes = collection("retrieve", ctx.message.author.mention, prize)
+            if prize not in member_prizes:
+                await ctx.send("This isn't some Kickstarter, you can't sell something you don't actually have yet.")
+            else:
+                collection("remove", ctx.message.author.mention, prize)
+                buy_back = random.randint(int(int(PRIZES[prize][2])*0.35), int(int(PRIZES[prize][2])*0.65))
+                bank("add", ctx.message.author.mention, buy_back)
+                await ctx.send("That didn't depreciate too badly, you still got back " + str(buy_back) + " ᘋ for "
+                               "pawning that thing off. ")
         # Invalid action reply
         else:
             await ctx.send("That's not an option. You can buy or pawn.")
