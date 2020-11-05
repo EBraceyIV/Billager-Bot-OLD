@@ -34,7 +34,7 @@ class Auto(commands.Cog):
 
         time = datetime.datetime.now()
         if not called_out:
-            if time.day == 5 and time.hour in [11, 12, 13, 14] and message.channel.id == 743616007435976754:
+            if time.day == 6 and time.hour in [17, 18, 19] and message.channel.id == 743616007435976754:
                 called_out = True
                 await asyncio.sleep(5)
                 plusMinus = shelve.open("plusMinus")
@@ -46,7 +46,7 @@ class Auto(commands.Cog):
                                            "This week, " + str(score_sorted[0][0]) + " has the worst score so far. All the "
                                            "way down at a fat " + str(score_sorted[0][1]) + "!")
         else:
-            if called_out and time.day == 4:
+            if called_out and time.day == 5:
                 called_out = False
 
 
