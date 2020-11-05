@@ -45,7 +45,7 @@ class BasicReply(commands.Cog, name="Basic Replies"):
         await ctx.send(response)
 
     # Randomly picks a Will-thing to say
-    @commands.command(name='will', aliases=['Will'], help='Will Simulator',
+    @commands.command(name='will', help='Will Simulator',
                       description="Billager's many impressions of Will, he's got more than 30!")
     async def will(self, ctx):
         willReplies = ["pepehands " + depression,

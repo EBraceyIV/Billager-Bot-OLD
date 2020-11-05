@@ -214,10 +214,10 @@ class BBux(commands.Cog):
                 await ctx.send("This isn't some Kickstarter, you can't sell something you don't actually have yet.")
             else:
                 collection("remove", ctx.message.author.mention, prize)
-                buy_back = random.randint(int(int(PRIZES[prize][2])*0.35), int(int(PRIZES[prize][2])*0.65))
+                buy_back = random.randint(int(int(PRIZES[prize][2]) * 0.35), int(int(PRIZES[prize][2]) * 0.65))
                 bank("add", ctx.message.author.mention, buy_back)
                 await ctx.send("That didn't depreciate too badly, you still got back " + str(buy_back) + " ᘋ for "
-                               "pawning that thing off. ")
+                                                                                                         "pawning that thing off. ")
         # Invalid action reply
         else:
             await ctx.send("That's not an option. You can buy or pawn.")

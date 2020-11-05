@@ -30,14 +30,14 @@ class Lore(commands.Cog):
 
     # Display the requested piece of lore, or a random piece if none is specified
     @commands.command(name='lore', description="View some enjoyable server lore.",
-                      help="This is for lore reading.", aliases=['Lore'])
+                      help="This is for lore reading.")
     async def lore(self, ctx, *, lore_title: typing.Optional[str]):
         lore_title = random.choice(all_lore) if lore_title is None else lore_title
         embed = lore_keeper[lore_title]
         await ctx.send(embed=embed)
 
     # Add a new piece of lore to the records
-    @commands.command(name='addLore', aliases=['AddLore'])
+    @commands.command(name='addLore')
     async def addLore(self, ctx, lore_title: str, *, lore_description: str):
         lore_num = str(random.randint(1000, 9999))
         # Pass the relevant info to the embed builder
@@ -47,7 +47,7 @@ class Lore(commands.Cog):
         await ctx.send(embed=embed)
 
     # Edit an existing piece of lore
-    @commands.command(name='editLore', aliases=['EditLore'])
+    @commands.command(name='editLore')
     async def editLore(self, ctx, lore_title: str, edit_field: str, *, edit: str):
         if lore_title not in lore_keeper:
             await ctx.send('Can\'t find that lore!')
@@ -73,8 +73,7 @@ class Lore(commands.Cog):
         await ctx.send(embed=embed)
 
     # Remove a piece of lore from the records
-    @commands.command(name="killLore", aliases=['KillLore'],
-                      help="Remove a piece of lore from the records.",
+    @commands.command(name="killLore", help="Remove a piece of lore from the records.",
                       description="Only the user who issues this command can reply to confirm.")
     async def killLore(self, ctx, lore_title):
         # Check to see if the lore exists

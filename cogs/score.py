@@ -4,7 +4,7 @@ import shelve
 import typing
 
 # shelve init
-plusMinus = shelve.open('plusMinus') # stores the +- scores
+plusMinus = shelve.open('plusMinus')  # stores the +- scores
 
 # This is here to use
 beefBrain = '<:BeefBrain:631694337549271050>'
@@ -55,7 +55,7 @@ class Score(commands.Cog):
             await ctx.send('You can only subtract whole numbers ' + beefBrain)
 
     # Respond with the specified user's score
-    @commands.command(name="score", aliases=['Score', 'SCORE'], help="List a user's +- score.")
+    @commands.command(name="score", help="List a user's +- score.")
     async def score(self, ctx, member: discord.Member):
         # Initialize user's score if they don't already have one
         if member.mention not in plusMinus:
@@ -64,7 +64,7 @@ class Score(commands.Cog):
         await ctx.send(member.display_name + ' is at a ' + str(plusMinus[member.mention]))
 
     # Show a scoreboard from highest to lowest for all users with a score
-    @commands.command(name="scoreboard", aliases=["Scoreboard"], help="Scoreboard of the highest and lowest scores.")
+    @commands.command(name="scoreboard", help="Scoreboard of the highest and lowest scores.")
     async def scoreboard(self, ctx):
         # Initialize scoreboard embed message and embed description
         embed = discord.Embed(title="Scoreboard")

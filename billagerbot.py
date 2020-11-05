@@ -4,10 +4,11 @@ from discord.ext import commands
 import TOKEN
 import shelve
 
-# BOT TOKEN
+# TOKEN retrieved from a separate file with just a function that returns the string
 TOKEN = TOKEN.token()
 
-bot = commands.Bot(command_prefix=['bb:', 'BB:', 'Bb:', 'Bb:'], description="Your very good friend, the Billager.")
+bot = commands.Bot(command_prefix=['bb:', 'BB:', 'Bb:', 'Bb:'], description="Your very good friend, the Billager.",
+                   case_insensitive=True)
 
 
 # Conduct on startup
