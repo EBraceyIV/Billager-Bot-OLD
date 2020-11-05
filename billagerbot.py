@@ -16,7 +16,7 @@ bot = commands.Bot(command_prefix=['bb:', 'BB:', 'Bb:', 'Bb:'], description="You
 async def on_ready():
     print('Billager has logged in as {0}.'.format(bot.user.name))
 
-    # Initialize the BBux Bank (maybe prevent pickle error)
+    # Initialize BBux bank and user prize collections
     bbux_bank = shelve.open("bbux_bank")
     member_collections = shelve.open("member_collection")
     for guild in bot.guilds:
