@@ -229,10 +229,10 @@ class BBux(commands.Cog):
         skee_score = sum(random.choices([10, 20, 30, 40, 50, 100], weights=(30, 40, 25, 20, 10, 5), k=9))
         # Navigate edge cases that the lambda is not designed well for
         # Score simulation showed: min. around 100, max. around 650, avg. around 250
-        if skee_score < 150:
-            bbux_won = 100
-        elif skee_score > 450:
-            bbux_won = 4000
+        if skee_score < 170:
+            bbux_won = 150
+        elif skee_score > 500:
+            bbux_won = 7000
         else:
             # Calculate prize output according to a cubic function I designed that is based on score simulations I ran
             skee_prize = lambda x: 0.0004 * pow((x - 252), 3) + 300
