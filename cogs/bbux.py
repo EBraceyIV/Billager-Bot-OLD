@@ -204,6 +204,7 @@ class BBux(commands.Cog):
                 collection("add", ctx.message.author.mention, prize)
                 await ctx.send("You've redeemed {0} of your BBux for this wonderful item: {1}"
                                .format(PRIZES[prize][2], prize) + "\n" + "Congratulations on your shiny new prize!")
+        # Process a sell request for a prize
         elif action.lower() == "pawn":
             # Check if the requested prize exists
             if prize not in list(PRIZES.keys()):
@@ -216,8 +217,20 @@ class BBux(commands.Cog):
                 collection("remove", ctx.message.author.mention, prize)
                 buy_back = random.randint(int(int(PRIZES[prize][2]) * 0.35), int(int(PRIZES[prize][2]) * 0.65))
                 bank("add", ctx.message.author.mention, buy_back)
-                await ctx.send("That didn't depreciate too badly, you still got back " + str(buy_back) + " ᘋ for "
-                                                                                                         "pawning that thing off. ")
+                await ctx.send("That didn't depreciate too badly, you still got back {0} ᘋ for "
+                               "pawning that thing off. ".format(buy_back))
+        # List users and their BBux balances
+        elif action.lower() == "list":
+            # Sort user BBux balances
+            desc = ""
+            bbux_bank = shelve.open("bbux_bank")
+            bank_sorted = sorted(bbux_bank.items(), key=lambda x: x[1])
+            # Iterate through the balances
+            for balance in bank_sorted:
+                # Here "balance" is a tuple, containing the user and score, adding each to a new line
+                desc = str(balance[0]) + ": " + str(balance[1]) + "\n" + desc
+            print(desc)
+
         # Invalid action reply
         else:
             await ctx.send("That's not an option. You can buy or pawn.")
