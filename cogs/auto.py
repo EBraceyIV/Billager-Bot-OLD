@@ -36,14 +36,15 @@ class Auto(commands.Cog):
 
         # The day and hour of the message being sent is needed to trigger the callout post
         time = datetime.datetime.now()
-
         if not called_out:
+            print("Ouch")
             # The callout post can be triggered on Fridays between 5 and 7 P.M. EST in a specific channel
-            if time.day == 6 and time.hour in [17, 18, 19] and message.channel.id == 743616007435976754:
+            # FOR TESTING: 720833461329461347
+            if time.weekday() == 4 and time.hour in [17, 18, 19] and message.channel.id == 743616007435976754:
                 # Wait a short while after detecting a valid trigger message to make it seem more organic, but only
                 # after setting called_out to True so that no other messages trigger another post during the wait
                 called_out = True
-                await asyncio.sleep(120)
+                await asyncio.sleep(2)
 
                 # Sort the current user scores from highest to lowest
                 plusMinus = shelve.open("plusMinus")
