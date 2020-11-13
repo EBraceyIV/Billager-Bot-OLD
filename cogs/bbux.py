@@ -255,9 +255,9 @@ class BBux(commands.Cog):
         await ctx.send("You scored {0} on Billager's Big Baller Skee-Ball machine! You've earned {1} ᘋ."
                        .format(skee_score, bbux_won))
 
-    @commands.command(name="slots", help="Play a round on the slot machine and win some BBux.")
+    @commands.command(name="slots", help="Play a round on the slot machine and win some BBux.", hidden=True)
     async def slots(self, ctx, bet: typing.Optional[str]):
-        slot_options = {"💎": 10, "💰": 5, "💸": 3, "💵": 1, "🧾": 1, "💣": 0}
+        slot_options = {"💎": 20, "💰": 10, "💸": 5, "💵": 2, "🧾": 1, "💣": 0}
         slot_results = random.choices(list(slot_options.keys()), weights=(5, 8, 14, 20, 35, 18), k=3)
         if slot_results[0] == slot_results[1] == slot_results[2]:
             slot_reward = bet * slot_options[slot_results[0]]
