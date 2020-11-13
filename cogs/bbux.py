@@ -242,9 +242,9 @@ class BBux(commands.Cog):
         skee_score = sum(random.choices([10, 20, 30, 40, 50, 100], weights=(30, 40, 25, 20, 10, 5), k=9))
         # Navigate edge cases that the lambda is not designed well for
         # Score simulation showed: min. around 100, max. around 650, avg. around 250
-        if skee_score < 170:
+        if skee_score <= 170:
             bbux_won = 150
-        elif skee_score > 500:
+        elif skee_score >= 500:
             bbux_won = 7000
         else:
             # Calculate prize output according to a cubic function I designed that is based on score simulations I ran
@@ -259,6 +259,9 @@ class BBux(commands.Cog):
     async def slots(self, ctx, bet: typing.Optional[str]):
         slot_options = {"💎": 20, "💰": 10, "💸": 5, "💵": 2, "🧾": 1, "💣": 0}
         slot_results = random.choices(list(slot_options.keys()), weights=(5, 8, 14, 20, 35, 18), k=3)
+        for icon in slot_results:
+            if icon == "💣":
+                slot_rewards = 0
         if slot_results[0] == slot_results[1] == slot_results[2]:
             slot_reward = bet * slot_options[slot_results[0]]
         print(slot_results)
