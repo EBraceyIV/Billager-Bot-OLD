@@ -54,8 +54,8 @@ class Auto(commands.Cog):
                 # Send our fun little message letting our friend know they should try making better jokes
                 await message.channel.send("This is your weekly Bad Score Callout Post, a public service brought to "
                                            "you by Billager Bot. \n"
-                                           "This week, " + str(score_sorted[-1][0]) + " has the worst score so far. "
-                                           "All the way down at a fat " + str(score_sorted[-1][1]) + "!")
+                                           "This week, " + str(score_sorted[0][0]) + " has the worst score so far. "
+                                           "All the way down at a fat " + str(score_sorted[0][1]) + "!")
         else:
             # Reset the called_out status on Thursday
             if called_out and time.day == 5:
