@@ -258,10 +258,16 @@ class BBux(commands.Cog):
     @commands.command(name="slots", help="Play a round on the slot machine and win some BBux.", hidden=True)
     async def slots(self, ctx, bet: typing.Optional[str]):
         slot_options = {"💎": 20, "💰": 10, "💸": 5, "💵": 2, "🧾": 1, "💣": 0}
-        slot_results = random.choices(list(slot_options.keys()), weights=(5, 8, 14, 20, 35, 18), k=3)
-        for icon in slot_results:
-            if icon == "💣":
-                slot_rewards = 0
+        slot_results = random.choices(list(slot_options.keys()), weights=(5, 8, 14, 20, 35, 10), k=3)
+        await ctx.send("╔═══════════════════╗\n"
+                       "║███░█░░░███░███░███║\n"
+                       "║█░░░█░░░█░█░░█░░█░░║\n"
+                       "║███░█░░░█░█░░█░░███║\n"
+                       "║░░█░█░░░█░█░░█░░░░█║\n"
+                       "║███░███░███░░█░░███║\n"
+                       "╚═══════════════════╝\n")
+        await ctx.send("You get nothing because you are a loser.") if "💣" in slot_results else None
+
         if slot_results[0] == slot_results[1] == slot_results[2]:
             slot_reward = bet * slot_options[slot_results[0]]
         print(slot_results)
