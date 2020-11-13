@@ -44,7 +44,7 @@ class Auto(commands.Cog):
                 # Wait a short while after detecting a valid trigger message to make it seem more organic, but only
                 # after setting called_out to True so that no other messages trigger another post during the wait
                 called_out = True
-                await asyncio.sleep(2)
+                await asyncio.sleep(120)
 
                 # Sort the current user scores from highest to lowest
                 plusMinus = shelve.open("plusMinus")
