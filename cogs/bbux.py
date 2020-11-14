@@ -256,11 +256,10 @@ class BBux(commands.Cog):
                        .format(skee_score, bbux_won))
 
     @commands.command(name="slots", help="Play a round on the slot machine and win some BBux.", hidden=True)
-    async def slots(self, ctx, bet: typing.Optional[int]):
+    async def slots(self, ctx, bet: typing.Optional[int] = 100):
         slot_options = {"💎": 20, "💰": 10, "💸": 5, "💵": 2, "🧾": 1, "💣": 0}
         slot_vals = random.choices(list(slot_options.keys()), weights=(5, 8, 12, 20, 35, 8), k=9)
         slot_results = slot_vals[3:6]
-        bbux_won = 0
         # await ctx.send("╔═══════════════════╗\n"
         #                "║███░█░░░███░███░███║\n"
         #                "║█░░░█░░░█░█░░█░░█░░║\n"
@@ -283,6 +282,7 @@ class BBux(commands.Cog):
         await ctx.send(embed=embed_bottom)
 
         if "💣" in slot_results:
+            bbux_won = 0
             await ctx.send("You get nothing because you are a loser.")
         elif slot_results[0] == slot_results[1] == slot_results[2]:
             bbux_won = bet * slot_options[slot_results[0]] * 2
@@ -295,7 +295,6 @@ class BBux(commands.Cog):
             await ctx.send("Shine like a diamond!")
 
         await ctx.send("You win " + str(int(bbux_won)))
-        # if bbux_won is not 0:
         #     bank("add", ctx.message.author.mention, int(bbux_won))
         return
 
