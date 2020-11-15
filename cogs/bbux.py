@@ -262,8 +262,8 @@ class BBux(commands.Cog):
         async def double_win(slot_match):
             bbux_won = bet * slot_options[slot_results[slot_match]] * 1.25
             bank("add", ctx.message.author.mention, bbux_won)
-            await ctx.send("**DOUBLE!** Well, at least you got two of a kind. You can have {0} BBux for that."
-                           .format(bbux_won))
+            await ctx.send("**{0} DOUBLE!** Well, at least you got two of a kind. You can have {1} BBux for that."
+                           .format(slot_results[slot_match], bbux_won))
 
         bank("remove", ctx.message.author.mention, bet)
         slot_options = {"💎": 20, "💰": 10, "💸": 5, "💵": 2, "🧾": 1, "💣": 0}
@@ -281,12 +281,12 @@ class BBux(commands.Cog):
         await ctx.send(embed=embed_bottom)
 
         if "💣" in slot_results:
-            await ctx.send("**KABOOM!** That's a BOMBO! You win a big fat nothing.")
+            await ctx.send("**💥 KABOOM!** That's a BOMBO! You win a big fat nothing.")
         elif slot_results[0] == slot_results[1] == slot_results[2]:
             bbux_won = bet * slot_options[slot_results[0]] * 2
             bank("add", ctx.message.author.mention, bbux_won)
-            await ctx.send("**CHA-CHING!** That's a full match! Enjoy your deluxe mega payout of {0} BBux!"
-                           .format(bbux_won))
+            await ctx.send("**{0} CHA-CHING!** That's a full match! Enjoy your deluxe mega payout of {1} BBux!"
+                           .format(slot_results[0], bbux_won))
         elif slot_results[0] == slot_results[1] or slot_results[0] == slot_results[2]:
             await double_win(0)
         elif slot_results[1] == slot_results[2]:
@@ -294,10 +294,10 @@ class BBux(commands.Cog):
         elif "💎" in slot_results:
             bbux_won = bet / 4
             bank("add", ctx.message.author.mention, int(bbux_won))
-            await ctx.send("Shine like a diamond! I'll let you keep {0} of your bet for finding me one of these."
+            await ctx.send("💎 Shine like a diamond! I'll let you keep {0} of your bet for finding me one of these."
                            .format(int(bbux_won)))
         else:
-            await ctx.send("**WOMP WOMP!** No matches for you! Please try again. Maybe with a bigger bet...")
+            await ctx.send("**❌ WOMP WOMP!** No matches for you! Please try again. Maybe with a bigger bet...")
 
     @skeeball.error
     async def skeeball_error(self, ctx, error):
