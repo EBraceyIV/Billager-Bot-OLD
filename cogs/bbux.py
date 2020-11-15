@@ -255,49 +255,49 @@ class BBux(commands.Cog):
         await ctx.send("You scored {0} on Billager's Big Baller Skee-Ball machine! You've earned {1} ᘋ."
                        .format(skee_score, bbux_won))
 
-    @commands.command(name="slots", help="Play a round on the slot machine and win some BBux.", hidden=True)
+    @commands.command(name="slots", help="Play a round on the slot machine and win some BBux.",
+                      description="Play one of Billager's fantastical slot machines. Default bet is 100, or put as "
+                                  "much of your money where your mouth is as you'd like.", hidden=True)
     async def slots(self, ctx, bet: typing.Optional[int] = 100):
+        async def double_win(slot_match):
+            bbux_won = bet * slot_options[slot_results[slot_match]] * 1.25
+            bank("add", ctx.message.author.mention, bbux_won)
+            await ctx.send("**DOUBLE!** Well, at least you got two of a kind. You can have {0} BBux for that."
+                           .format(bbux_won))
+
+        bank("remove", ctx.message.author.mention, bet)
         slot_options = {"💎": 20, "💰": 10, "💸": 5, "💵": 2, "🧾": 1, "💣": 0}
         slot_vals = random.choices(list(slot_options.keys()), weights=(5, 8, 12, 20, 35, 8), k=9)
         slot_results = slot_vals[3:6]
-        # await ctx.send("╔═══════════════════╗\n"
-        #                "║███░█░░░███░███░███║\n"
-        #                "║█░░░█░░░█░█░░█░░█░░║\n"
-        #                "║███░█░░░█░█░░█░░███║\n"
-        #                "║░░█░█░░░█░█░░█░░░░█║\n"
-        #                "║███░███░███░░█░░███║\n"
-        #                "╚═══════════════════╝\n")
 
         embed_top = discord.Embed(description="{0}  --  {1}  --  {2}"
                                   .format(slot_vals[0], slot_vals[1], slot_vals[2]), color=0xfffffe)
-
+        await ctx.send(embed=embed_top)
         embed_mid = discord.Embed(description="{0}  --  {1}  --  {2}"
                                   .format(slot_vals[3], slot_vals[4], slot_vals[5]), color=0xff6600)
-
+        await ctx.send(embed=embed_mid)
         embed_bottom = discord.Embed(description="{0}  --  {1}  --  {2}"
                                      .format(slot_vals[6], slot_vals[7], slot_vals[8]), color=0xfffffe)
-
-        await ctx.send(embed=embed_top)
-        await ctx.send(embed=embed_mid)
         await ctx.send(embed=embed_bottom)
 
         if "💣" in slot_results:
-            bbux_won = 0
-            await ctx.send("You get nothing because you are a loser.")
+            await ctx.send("**KABOOM!** That's a BOMBO! You win a big fat nothing.")
         elif slot_results[0] == slot_results[1] == slot_results[2]:
             bbux_won = bet * slot_options[slot_results[0]] * 2
+            bank("add", ctx.message.author.mention, bbux_won)
+            await ctx.send("**CHA-CHING!** That's a full match! Enjoy your deluxe mega payout of {0} BBux!"
+                           .format(bbux_won))
         elif slot_results[0] == slot_results[1] or slot_results[0] == slot_results[2]:
-            bbux_won = bet * slot_options[slot_results[0]] * 1.25
+            await double_win(0)
         elif slot_results[1] == slot_results[2]:
-            bbux_won = bet * slot_options[slot_results[1]] * 1.25
+            await double_win(1)
         elif "💎" in slot_results:
             bbux_won = bet / 4
-            await ctx.send("Shine like a diamond!")
-
-        await ctx.send("You win " + str(int(bbux_won)))
-        #     bank("add", ctx.message.author.mention, int(bbux_won))
-        return
-
+            bank("add", ctx.message.author.mention, int(bbux_won))
+            await ctx.send("Shine like a diamond! I'll let you keep {0} of your bet for finding me one of these."
+                           .format(int(bbux_won)))
+        else:
+            await ctx.send("**WOMP WOMP!** No matches for you! Please try again. Maybe with a bigger bet...")
 
     @skeeball.error
     async def skeeball_error(self, ctx, error):
