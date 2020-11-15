@@ -260,7 +260,7 @@ class BBux(commands.Cog):
                                   "much of your money where your mouth is as you'd like.", hidden=True)
     async def slots(self, ctx, bet: typing.Optional[int] = 100):
         async def double_win(slot_match):
-            bbux_won = bet * slot_options[slot_results[slot_match]] * 1.25
+            bbux_won = int(bet * slot_options[slot_results[slot_match]] * 1.25)
             bank("add", ctx.message.author.mention, bbux_won)
             await ctx.send("**{0} DOUBLE!** Well, at least you got two of a kind. You can have {1} BBux for that."
                            .format(slot_results[slot_match], bbux_won))
@@ -292,10 +292,10 @@ class BBux(commands.Cog):
         elif slot_results[1] == slot_results[2]:
             await double_win(1)
         elif "💎" in slot_results:
-            bbux_won = bet / 4
-            bank("add", ctx.message.author.mention, int(bbux_won))
+            bbux_won = int(bet / 4)
+            bank("add", ctx.message.author.mention, bbux_won)
             await ctx.send("💎 Shine like a diamond! I'll let you keep {0} of your bet for finding me one of these."
-                           .format(int(bbux_won)))
+                           .format(bbux_won))
         else:
             await ctx.send("**❌ WOMP WOMP!** No matches for you! Please try again. Maybe with a bigger bet...")
 
