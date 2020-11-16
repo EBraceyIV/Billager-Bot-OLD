@@ -235,6 +235,7 @@ class BBux(commands.Cog):
         else:
             await ctx.send("That's not an option. You can buy or pawn.")
 
+    # Skeeball machine to earn BBux
     @commands.cooldown(rate=3, per=60 * 5, type=commands.BucketType.member)
     @commands.command(name="skeeball", help="Play a game of Skee-Ball and win some BBux.")
     async def skeeball(self, ctx):
@@ -255,22 +256,35 @@ class BBux(commands.Cog):
         await ctx.send("You scored {0} on Billager's Big Baller Skee-Ball machine! You've earned {1} ᘋ."
                        .format(skee_score, bbux_won))
 
+    # Slot machine to earn BBux
     @commands.cooldown(rate=10, per=60 * 10, type=commands.BucketType.member)
     @commands.command(name="slots", help="Play a round on the slot machine and win some BBux.",
                       description="Play one of Billager's fantastical slot machines. Default bet is 100, or put as "
                                   "much of your money where your mouth is as you'd like.")
     async def slots(self, ctx, bet: typing.Optional[int] = 100):
+        # Check that user has enough BBux to place their bet
+        if bank("retrieve", ctx.message.author.mention, None) < 100:
+            await ctx.send("The default bet is only 100 ᘋ and you don't even have that much? Try the skeeball machine.")
+            return
+        elif bank("retrieve", ctx.message.author.mention, None) < bet:
+            await ctx.send("You don't have enough BBux to make that kind of bet!")
+            return
+        # Subtract user's bet from their balance
+        bank("remove", ctx.message.author.mention, bet)
+
+        # Function to handle two-of-a-kind matches on the slot machine
         async def double_win(slot_match):
             bbux_won = int(bet * slot_options[slot_results[slot_match]] * 1.25)
             bank("add", ctx.message.author.mention, bbux_won)
             await ctx.send("**{0} DOUBLE!** Well, at least you got two of a kind. You can have {1} ᘋ for that."
                            .format(slot_results[slot_match], bbux_won))
 
-        bank("remove", ctx.message.author.mention, bet)
+        # Generate a list of icons to represent the results of the slot machine, the middle 3 is a row that counts
         slot_options = {"💎": 20, "💰": 10, "💸": 5, "💵": 2, "🧾": 1, "💣": 0}
         slot_vals = random.choices(list(slot_options.keys()), weights=(5, 8, 12, 20, 35, 8), k=9)
         slot_results = slot_vals[3:6]
 
+        # Display the results, line by line, color code the middle line
         embed_top = discord.Embed(description="{0}  --  {1}  --  {2}"
                                   .format(slot_vals[0], slot_vals[1], slot_vals[2]), color=0xfffffe)
         await ctx.send(embed=embed_top)
@@ -281,6 +295,8 @@ class BBux(commands.Cog):
                                      .format(slot_vals[6], slot_vals[7], slot_vals[8]), color=0xfffffe)
         await ctx.send(embed=embed_bottom)
 
+        # Process results of slot roll, a bomb gives no rewards even with a double, no match gives no reward,
+        # a double gives some reward, a triple gives big reward, just a diamond gives a tiny reward
         if "💣" in slot_results:
             await ctx.send("**💥 KABOOM!** That's a BOMBO! You win a big fat nothing.")
         elif slot_results[0] == slot_results[1] == slot_results[2]:
