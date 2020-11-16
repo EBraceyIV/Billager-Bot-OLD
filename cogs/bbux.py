@@ -255,14 +255,15 @@ class BBux(commands.Cog):
         await ctx.send("You scored {0} on Billager's Big Baller Skee-Ball machine! You've earned {1} ᘋ."
                        .format(skee_score, bbux_won))
 
+    @commands.cooldown(rate=10, per=60 * 10, type=commands.BucketType.member)
     @commands.command(name="slots", help="Play a round on the slot machine and win some BBux.",
                       description="Play one of Billager's fantastical slot machines. Default bet is 100, or put as "
-                                  "much of your money where your mouth is as you'd like.", hidden=True)
+                                  "much of your money where your mouth is as you'd like.")
     async def slots(self, ctx, bet: typing.Optional[int] = 100):
         async def double_win(slot_match):
             bbux_won = int(bet * slot_options[slot_results[slot_match]] * 1.25)
             bank("add", ctx.message.author.mention, bbux_won)
-            await ctx.send("**{0} DOUBLE!** Well, at least you got two of a kind. You can have {1} BBux for that."
+            await ctx.send("**{0} DOUBLE!** Well, at least you got two of a kind. You can have {1} ᘋ for that."
                            .format(slot_results[slot_match], bbux_won))
 
         bank("remove", ctx.message.author.mention, bet)
@@ -285,7 +286,7 @@ class BBux(commands.Cog):
         elif slot_results[0] == slot_results[1] == slot_results[2]:
             bbux_won = bet * slot_options[slot_results[0]] * 2
             bank("add", ctx.message.author.mention, bbux_won)
-            await ctx.send("**{0} CHA-CHING!** That's a full match! Enjoy your deluxe mega payout of {1} BBux!"
+            await ctx.send("**{0} CHA-CHING!** That's a full match! Enjoy your deluxe mega payout of {1} ᘋ!"
                            .format(slot_results[0], bbux_won))
         elif slot_results[0] == slot_results[1] or slot_results[0] == slot_results[2]:
             await double_win(0)
@@ -294,7 +295,7 @@ class BBux(commands.Cog):
         elif "💎" in slot_results:
             bbux_won = int(bet / 4)
             bank("add", ctx.message.author.mention, bbux_won)
-            await ctx.send("💎 Shine like a diamond! I'll let you keep {0} of your bet for finding me one of these."
+            await ctx.send("💎 Diamond in the rough! I'll let you keep {0} ᘋ from your bet for finding me one of these."
                            .format(bbux_won))
         else:
             await ctx.send("**❌ WOMP WOMP!** No matches for you! Please try again. Maybe with a bigger bet...")
@@ -303,6 +304,11 @@ class BBux(commands.Cog):
     async def skeeball_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send("That's enough Skee-ball for a while! Try another game or wait a few minutes.")
+
+    @slots.error
+    async def slots_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send("Whoa buddy, that's a lot of slots. Take it easy and try something else for a little while.")
 
 
 def setup(bot):
