@@ -10,7 +10,7 @@ from pathlib import Path
 mp3s = ['honk', 'speech', 'short', 'pulp', 'navy', "Track01", "Track02", "Track03", "Track04", "Track05", "Track06",
         "Track07", "Track08", "Track09", "Track10", "Track11", "Track12", "Track13", "Track14", "Track15", "Track16",
         "Track17", "Track18", "Track19", "Track20", "Track21", "Track22", "Track23", "Track24", "Track25", "Track26",
-        "Track27"]
+        "Track27", "ninja"]
 vc = 0
 
 
