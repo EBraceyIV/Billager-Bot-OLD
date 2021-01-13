@@ -89,8 +89,15 @@ class BBux(commands.Cog):
                                   description="Come one, come all. "
                                               "See the bounty that awaits you on B. Bot's prize shelf!",
                                   color=0xfffffe)
-            for prize in prize_names:
-                embed.add_field(name=prize, value=PRIZES[prize][2] + " ᘋ")
+            # Generate the prize shelf and sort by rarity / value
+            for rarity in prizes.rarities:
+                embed.add_field(name="**" + rarity + "s**",
+                                value="__Valued at " + prizes.values[prizes.rarities.index(rarity)] + "__",
+                                inline=False)
+                for prize in prize_names:
+                    if PRIZES[prize][3] == rarity:
+                        embed.add_field(name=prize, value=PRIZES[prize][2] + " ᘋ", inline=True)
+
             await ctx.send(embed=embed)
             return
 

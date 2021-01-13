@@ -1,6 +1,8 @@
 import discord
 
 # Rarity colors:
+rarities = ["Common", "Peculiar", "Perplexing", "Mystifying", "Fantasmaglorical"]
+values = ["1 ᘋ - 1000 ᘋ", "1001 ᘋ - 5000 ᘋ", "5001 ᘋ - 10000 ᘋ", "10001 ᘋ - 100000 ᘋ", "100001 ᘋ +"]
 common = 0x150549
 peculiar = 0xff22df
 perplexing = 0xf0ff00
