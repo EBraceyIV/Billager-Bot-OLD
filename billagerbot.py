@@ -4,6 +4,11 @@ from discord.ext import commands
 import TOKEN
 import shelve
 
+# TODO :For merge to master:
+# TODO - Go over every file and comment / improve comment quality
+# TODO - Format BBux prize collection for user
+# TODO - Look for duplicate blocks and try to simplify
+
 # TOKEN retrieved from a separate file with just a function that returns the string
 TOKEN = TOKEN.token()
 
