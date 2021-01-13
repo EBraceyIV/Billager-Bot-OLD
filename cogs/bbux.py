@@ -71,7 +71,7 @@ class BBux(commands.Cog):
         self.bot = bot
 
     # Displays a list of the available prizes
-    @commands.command(name="prizes", help="See a list of everything in your prize collection!")
+    @commands.command(name="myPrizes", help="See a list of everything in your prize collection!")
     async def prizes(self, ctx):
         prizes = collection("retrieve", ctx.message.author.mention, None)
         await ctx.send("You own: " + str(prizes))

@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
+import random
 from pathlib import Path
 
 # Look in to: TTS
@@ -43,6 +44,7 @@ class Voice(commands.Cog):
     @commands.command(name="speak", help="Billager will speak.", pass_context=True)
     async def speak(self, ctx, arg: str):
         global vc
+        sound = None
 
         if not ctx.author.voice:
             await ctx.send('You get in the voice chat first.')
@@ -57,13 +59,16 @@ class Voice(commands.Cog):
 
         if arg in mp3s:
             sound = arg + ".mp3"
-            source = discord.FFmpegPCMAudio(Path.cwd() / 'mp3s' / sound)
-            vc.play(source, after=None)
-            while vc.is_playing():
-                await asyncio.sleep(1)
-            vc.stop()
+        elif arg == "random":
+            sound = random.choice(mp3s) + ".mp3"
         else:
             await ctx.send('Try something else.')
+
+        source = discord.FFmpegPCMAudio(Path.cwd() / 'mp3s' / sound)
+        vc.play(source, after=None)
+        while vc.is_playing():
+            await asyncio.sleep(1)
+        vc.stop()
 
     @commands.command(name="honk", help="Billager will do a little honk.")
     async def honk(self, ctx):
