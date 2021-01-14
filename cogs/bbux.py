@@ -68,7 +68,7 @@ def collection(action, member, prize):
         return
     # Return all prizes in a user's collection
     elif action == "retrieve":
-        return list(member_collections[member].keys())
+        return member_collections[member]
     member_collections.close()
 
 
@@ -80,10 +80,11 @@ class BBux(commands.Cog):
     @commands.command(name="myPrizes", help="See a list of everything in your prize collection!")
     async def prizes(self, ctx):
         user_prizes = collection("retrieve", ctx.message.author.mention, None)
-        prize_list = ""
-        for prize in user_prizes:
-            prize_list = prize_list + prize + ", "
-        await ctx.send("You own: " + prize_list[:-2])
+        embed = discord.Embed(title=ctx.message.author.display_name + "'s Prizes", color=ctx.message.author.color)
+        embed.set_thumbnail(url=ctx.message.author.avatar_url)
+        for prize in user_prizes.keys():
+            embed.add_field(name=prize, value="You own " + str(user_prizes[prize]) + ".")
+        await ctx.send(embed=embed)
 
     # Displays the information regarding a specified prize, a list of all prizes, or a random prize if no input is given
     @commands.command(name="prize", help="See the details on a special BBux prize!")
