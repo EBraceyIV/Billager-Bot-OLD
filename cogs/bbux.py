@@ -79,8 +79,11 @@ class BBux(commands.Cog):
     # Displays a list of the available prizes
     @commands.command(name="myPrizes", help="See a list of everything in your prize collection!")
     async def prizes(self, ctx):
-        prizes = collection("retrieve", ctx.message.author.mention, None)
-        await ctx.send("You own: " + str(prizes))
+        user_prizes = collection("retrieve", ctx.message.author.mention, None)
+        prize_list = ""
+        for prize in user_prizes:
+            prize_list = prize_list + prize + ", "
+        await ctx.send("You own: " + prize_list[:-2])
 
     # Displays the information regarding a specified prize, a list of all prizes, or a random prize if no input is given
     @commands.command(name="prize", help="See the details on a special BBux prize!")
