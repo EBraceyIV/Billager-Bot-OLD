@@ -2,16 +2,22 @@ import discord
 from discord.ext import commands
 import asyncio
 import random
+import os
 from pathlib import Path
 
 # Look in to: TTS
 # TTS -> Given text input, Billager should be able to convert it to spoken words and play it back
 #        Consider reading this: https://elinux.org/RPi_Text_to_Speech_(Speech_Synthesis) for more info at some point
 
-mp3s = ['honk', 'speech', 'short', 'pulp', 'navy', "Track01", "Track02", "Track03", "Track04", "Track05", "Track06",
-        "Track07", "Track08", "Track09", "Track10", "Track11", "Track12", "Track13", "Track14", "Track15", "Track16",
-        "Track17", "Track18", "Track19", "Track20", "Track21", "Track22", "Track23", "Track24", "Track25", "Track26",
-        "Track27", "ninja", "Gambino1", "Gambino2", "Gambino3", "Gambino4", "Gambino5"]
+# mp3s = ['honk', 'speech', 'short', 'pulp', 'navy', "Track01", "Track02", "Track03", "Track04", "Track05", "Track06",
+#         "Track07", "Track08", "Track09", "Track10", "Track11", "Track12", "Track13", "Track14", "Track15", "Track16",
+#         "Track17", "Track18", "Track19", "Track20", "Track21", "Track22", "Track23", "Track24", "Track25", "Track26",
+#         "Track27", "ninja", "Gambino1", "Gambino2", "Gambino3", "Gambino4", "Gambino5"]
+
+mp3s = []
+for file in os.listdir(Path.cwd() / "mp3s"):
+    mp3s.append(file[:-4])
+
 vc = 0
 
 
