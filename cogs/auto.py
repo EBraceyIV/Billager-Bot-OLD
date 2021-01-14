@@ -37,14 +37,17 @@ class Auto(commands.Cog):
         # The day and hour of the message being sent is needed to trigger the callout post
         time = datetime.datetime.now()
         if not called_out:
+            # Automatically know if I'm using the test bot or if Billager Bot is in control
+            # FOR TESTING: 720833461329461347  |  FOR USE: 743616007435976754
+            callout_channel = 720833461329461347 if self.bot.user.name == "BotTest" else 743616007435976754
+
             # The callout post can be triggered on Fridays between 5 and 7 P.M. EST in a specific channel
-            # FOR TESTING: 720833461329461347
-            if time.weekday() == 4 and time.hour in [17, 18, 19] and message.channel.id == 743616007435976754:
+            if time.weekday() == 3 and time.hour in [11] and message.channel.id == callout_channel:
                 # Wait a short while after detecting a valid trigger message to make it seem more organic, but only
                 # after setting called_out to True so that no other messages trigger another post during the wait
                 called_out = True
                 print("Callout post inbound.")
-                await asyncio.sleep(120)
+                await asyncio.sleep(2)
 
                 # Sort the current user scores from highest to lowest
                 plusMinus = shelve.open("plusMinus")
@@ -57,9 +60,14 @@ class Auto(commands.Cog):
                                            "This week, " + str(score_sorted[0][0]) + " has the worst score so far. "
                                            "All the way down at a fat " + str(score_sorted[0][1]) + "!")
         else:
-            # Reset the called_out status on Thursday
-            if called_out and time.day == 5:
+            # Reset the called_out status on Saturday
+            if called_out and time.weekday() == 5:
                 called_out = False
+                # Reset the whole scoreboard monthly, this should typically catch the last Saturday of the month
+                if time.day >= 24:
+                    plusMinus = shelve.open("plusMinus")
+                    plusMinus.clear()
+                    plusMinus.close()
 
 
 def setup(bot):
