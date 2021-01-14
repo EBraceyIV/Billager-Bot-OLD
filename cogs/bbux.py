@@ -20,6 +20,10 @@ fantasmaglorical = 0x00ecff
 PRIZES = prizes.prizes()
 
 
+# BBux Bank management function
+# action: Add or remove to a balance, or see what the current balance is
+# member: Which user's balance to manage
+# amount: How many BBux to add/remove
 def bank(action, member, amount):
     bbux_bank = shelve.open("bbux_bank")
     if action == "add":
@@ -51,10 +55,12 @@ def collection(action, member, prize):
             member_collections[member] = temp
         return
     elif action == "remove":
+        # Remove a single prize from a user's collection if they own multiple of that prize
         if member_collections[member][prize] > 1:
             temp = member_collections[member]
             temp.update({prize: member_collections[member][prize] - 1})
             member_collections[member] = temp
+        # Removing the only one of a prize removes it's key from the collection dict
         else:
             temp = member_collections[member]
             del temp[prize]

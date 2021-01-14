@@ -7,7 +7,6 @@ import shelve
 # TODO :For merge to master:
 # TODO - Go over every file and comment / improve comment quality
 # TODO - Format BBux prize collection for user
-# TODO - Clear scoreboard monthly
 # TODO - Look for duplicate blocks and try to simplify
 
 # TOKEN retrieved from a separate file with just a function that returns the string
