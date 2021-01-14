@@ -5,6 +5,12 @@ class settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # A more advanced method to fixing any issues with the voice chat functionality, reloads the whole cog
+    @commands.command(name="vreload", hidden=True)
+    async def vreload(self, ctx):
+        self.bot.reload_extension("cogs.voice")
+        await ctx.send("Reloaded voice cog.")
+
 
 '''
   @commands.command()
