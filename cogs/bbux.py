@@ -4,6 +4,7 @@ import random
 import shelve
 from discord.ext import commands
 import prizes
+import re
 
 # B·Bux is the specialized Billager prize ticket system
 # I have no idea what this is really meant to be but I'd gonna do it anyway
@@ -89,11 +90,13 @@ class BBux(commands.Cog):
     # Displays the information regarding a specified prize, a list of all prizes, or a random prize if no input is given
     @commands.command(name="prize", help="See the details on a special BBux prize!")
     async def prize(self, ctx, *, item: typing.Optional[str]):
+        # Format item so that ’ and ' don't get caught up in the PRIZES keys, also make case insensitive
+        item = re.sub(r"[’']", "", item.lower())
         # Assign a random prize to display if a specific was not asked for
         item = random.choice(list(PRIZES.keys())) if item is None else item
 
         # Display full prize list
-        if item.lower() == "all":
+        if item == "all":
             prize_names = list(PRIZES.keys())
             embed = discord.Embed(title="Prize Shelf",
                                   description="Come one, come all. "
@@ -113,6 +116,7 @@ class BBux(commands.Cog):
 
         # Check that the requested item exists
         if item not in list(PRIZES.keys()):
+            print(item)
             await ctx.send("That prize does not exist, much like my interest in your nonsensical request.")
             return
         # Build the embed using the values from the list in the value of the key of the prize name
@@ -129,6 +133,8 @@ class BBux(commands.Cog):
     # Tell a user what their current supply of BBux is
     @commands.command(name="bbux", help="Check your current BBux balance.")
     async def bbux(self, ctx, action: typing.Optional[str], *, prize: typing.Optional[str]):
+        # Format item so that ’ and ' don't get caught up in the PRIZES keys, also make case insensitive
+        prize = re.sub(r"[’']", "", prize.lower())
         # Load the user's balance if no arguments are passed
         if action is None:
             await ctx.send(ctx.message.author.name + ", you have {0} ᘋ in your account."
@@ -145,20 +151,20 @@ class BBux(commands.Cog):
             else:
                 # Conduct the transaction
                 bank("remove", ctx.message.author.mention, PRIZES[prize][2])
-                collection("add", ctx.message.author.mention, prize)
+                collection("add", ctx.message.author.mention, PRIZES[prize][0].title)
                 await ctx.send("You've redeemed {0} of your BBux for this wonderful item: {1}"
-                               .format(PRIZES[prize][2], prize) + "\n" + "Congratulations on your shiny new prize!")
+                               .format(PRIZES[prize][2], PRIZES[prize][0].title) + "\n" + "Congratulations on your shiny new prize!")
         # Process a sell request for a prize
         elif action.lower() == "pawn":
             # Check if the requested prize exists
             if prize not in list(PRIZES.keys()):
                 await ctx.send("That prize does not exist, much like my interest in your nonsensical request.")
                 return
-            member_prizes = collection("retrieve", ctx.message.author.mention, prize)
-            if prize not in member_prizes:
+            member_prizes = collection("retrieve", ctx.message.author.mention, PRIZES[prize][0].title)
+            if PRIZES[prize][0].title not in member_prizes:
                 await ctx.send("This isn't some Kickstarter, you can't sell something you don't actually have yet.")
             else:
-                collection("remove", ctx.message.author.mention, prize)
+                collection("remove", ctx.message.author.mention, PRIZES[prize][0].title)
                 buy_back = random.randint(int(int(PRIZES[prize][2]) * 0.35), int(int(PRIZES[prize][2]) * 0.65))
                 bank("add", ctx.message.author.mention, buy_back)
                 await ctx.send("That didn't depreciate too badly, you still got back {0} ᘋ for "

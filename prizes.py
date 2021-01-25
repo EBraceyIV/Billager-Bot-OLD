@@ -9,21 +9,21 @@ perplexing = 0xf0ff00
 mystifying = 0xff4d00
 fantasmaglorical = 0x00ecff
 
-PRIZES = {"Seagull": [discord.Embed(title="Seagull",
+PRIZES = {"seagull": [discord.Embed(title="Seagull",
                                     description="Flying coast rat.",
                                     color=common),
                       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Larus_occidentalis_%28Western_Gull%29%2C_Point_Lobos%2C_CA%2C_US_-_May_2013.jpg/1200px-Larus_occidentalis_%28Western_Gull%29%2C_Point_Lobos%2C_CA%2C_US_-_May_2013.jpg",
                       "50",
                       "Common"],
 
-          "Will's Shoes": [discord.Embed(title="Will's Shoes",
+          "wills shoes": [discord.Embed(title="Will's Shoes",
                                          description="They're worth so little because he owns so many.",
                                          color=common),
                            "http://www.fantastischekinderdisco.be/clown_shoes.png",
                            "2",
                            "Common"],
 
-          "Coconut": [discord.Embed(title="Coconut",
+          "coconut": [discord.Embed(title="Coconut",
                                     description="It's a coconut. The coconut is the proud owner of both hair and milk, "
                                                 "which qualifies it as a mammal. Deadly when falling from its tropical "
                                                 "treetop abode, the coconut also demonstrates the killer instinct "
@@ -35,7 +35,7 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                       "200",
                       "Peculiar"],
 
-          "Elliott's Gamer Chair": [discord.Embed(title="Elliott's Gamer Chair",
+          "elliotts gamer chair": [discord.Embed(title="Elliott's Gamer Chair",
                                                   description="A throne for a true king. This vessel will support you "
                                                               "through gaming sessions upwards of 17 hours at a time. "
                                                               "That familiar comforting scent is sure to put you at "
@@ -46,7 +46,7 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                                     "500",
                                     "Peculiar"],
 
-          "Lava Lamp": [discord.Embed(title="Lava Lamp",
+          "lava lamp": [discord.Embed(title="Lava Lamp",
                                       description="Hot goo in a funky tube. No ticket prize shelf or psychedelic "
                                                   "bachelor pad is complete without one. Enter a magical trance and "
                                                   "watch those enchanting blobs bounce about. Be warned, however. Do "
@@ -59,7 +59,7 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                         "5000",
                         "Perplexing"],
 
-          "McDonald's Chicken Caesar Salad": [discord.Embed(title="McDonald's Chicken Caesar Salad",
+          "mcdonalds chicken caesar salad": [discord.Embed(title="McDonald's Chicken Caesar Salad",
                                                             description="Infinite Sandwich",
                                                             color=perplexing),
                                               "http://theloadedslice.net/image/cache/products/salads/chicken-caesar-salad-800x800.png",
@@ -67,7 +67,7 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                                               "Perplexing"],
 
           # TODO: Add "bonus stats" like, +4 Mcdonald's craving
-          "Juniel's Beard Clippings": [discord.Embed(title="Juniel's Beard Clippings",
+          "juniels beard clippings": [discord.Embed(title="Juniel's Beard Clippings",
                                                      description="He can grow this easily, the blueberries not so "
                                                                  "much. Those lucky enough to brustle this beard are "
                                                                  "considered his truest friends.",
@@ -76,7 +76,7 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                                        "7220",
                                        "Perplexing"],
 
-          "Chuy's Gift Card": [discord.Embed(title="Chuy's Gift Card",
+          "chuys gift card": [discord.Embed(title="Chuy's Gift Card",
                                              description="A blessed meal at no cost to you. Fajitas, burritos, "
                                                          "flautas, and of course a bowl of hot queso. All of this and "
                                                          "more could be yours. Dine at the Chihuahua Bar and feel "
@@ -86,7 +86,7 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                                "60000",
                                "Mystifying"],
 
-          "Dan's Car": [discord.Embed(title="Dan's Car",
+          "dans car": [discord.Embed(title="Dan's Car",
                                       description="Like a father and his son, Dan built this mean machine with his own "
                                                   "two hands in his garage. This spicy vroomer has unlimited vehicular "
                                                   "potential. A whole engine, all the tires, seats, a full tank of "
@@ -98,7 +98,7 @@ PRIZES = {"Seagull": [discord.Embed(title="Seagull",
                         "200000",
                         "Fantasmaglorical"],
 
-          "Pee Wee's Bike": [discord.Embed(title="Pee Wee's Bike",
+          "pee wees bike": [discord.Embed(title="Pee Wee's Bike",
                                            description="Found in the basement of the Alamo.",
                                            color=fantasmaglorical),
                              "https://jasonvorhees.files.wordpress.com/2012/05/pee-wee-bike.jpg",
