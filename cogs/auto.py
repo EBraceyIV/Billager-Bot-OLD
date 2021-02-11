@@ -42,12 +42,12 @@ class Auto(commands.Cog):
             callout_channel = 720833461329461347 if self.bot.user.name == "BotTest" else 743616007435976754
 
             # The callout post can be triggered on Fridays between 5 and 7 P.M. EST in a specific channel
-            if time.weekday() == 3 and time.hour in [11] and message.channel.id == callout_channel:
+            if time.weekday() == 4 and time.hour in [17, 18, 19] and message.channel.id == callout_channel:
                 # Wait a short while after detecting a valid trigger message to make it seem more organic, but only
                 # after setting called_out to True so that no other messages trigger another post during the wait
                 called_out = True
                 print("Callout post inbound.")
-                await asyncio.sleep(2)
+                await asyncio.sleep(120)
 
                 # Sort the current user scores from highest to lowest
                 plusMinus = shelve.open("plusMinus")
