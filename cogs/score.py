@@ -30,7 +30,7 @@ class Score(commands.Cog):
                 else:
                     plusMinus[member.mention] = int(plusMinus[member.mention]) + num
                 # com_term = self.bot.get_channel(461773779165511681)
-                await ctx.send(str(member.display_name) + ' +' + str(num))
+                await ctx.reply(str(member.display_name) + ' +' + str(num), mention_author=False)
 
         except ValueError:
             await ctx.send('You can only add whole numbers' + beefBrain)
@@ -49,14 +49,15 @@ class Score(commands.Cog):
                 print(member.mention + ' is up to ' + str(plusMinus[member.mention]))
 
             # com_term = self.bot.get_channel(461773779165511681)
-            await ctx.send(str(member.display_name) + ' -' + str(num))
+            await ctx.reply(str(member.display_name) + ' -' + str(num), mention_author=False)
 
         except ValueError:
             await ctx.send('You can only subtract whole numbers ' + beefBrain)
 
     # Respond with the specified user's score
     @commands.command(name="score", help="List a user's +- score.")
-    async def score(self, ctx, member: discord.Member):
+    async def score(self, ctx, member: typing.Optional[discord.Member]):
+        member = ctx.message.author if member is None else member
         # Initialize user's score if they don't already have one
         if member.mention not in plusMinus:
             plusMinus[member.mention] = int(0)
