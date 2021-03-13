@@ -133,8 +133,9 @@ class BBux(commands.Cog):
     # Tell a user what their current supply of BBux is
     @commands.command(name="bbux", help="Check your current BBux balance.")
     async def bbux(self, ctx, action: typing.Optional[str], *, prize: typing.Optional[str]):
-        # Format item so that ’ and ' don't get caught up in the PRIZES keys, also make case insensitive
-        prize = re.sub(r"[’']", "", prize.lower())
+        if prize is not None:
+            # Format item so that ’ and ' don't get caught up in the PRIZES keys, also make case insensitive
+            prize = re.sub(r"[’']", "", prize.lower())
         # Load the user's balance if no arguments are passed
         if action is None:
             await ctx.send(ctx.message.author.name + ", you have {0} ᘋ in your account."
@@ -170,16 +171,17 @@ class BBux(commands.Cog):
                 await ctx.send("That didn't depreciate too badly, you still got back {0} ᘋ for "
                                "pawning that thing off. ".format(buy_back))
         # List users and their BBux balances
-        elif action.lower() == "list":
-            # Sort user BBux balances
-            desc = ""
-            bbux_bank = shelve.open("bbux_bank")
-            bank_sorted = sorted(bbux_bank.items(), key=lambda x: x[1])
-            # Iterate through the balances
-            for balance in bank_sorted:
-                # Here "balance" is a tuple, containing the user and score, adding each to a new line
-                desc = str(balance[0]) + ": " + str(balance[1]) + "\n" + desc
-            print(desc)
+        # elif action.lower() == "list":
+        #     # Sort user BBux balances
+        #     desc = ""
+        #     bbux_bank = shelve.open("bbux_bank")
+        #     bank_sorted = sorted(bbux_bank.items(), key=lambda x: x[1])
+        #     # Iterate through the balances
+        #     for balance in bank_sorted:
+        #         # Here "balance" is a tuple, containing the user and score, adding each to a new line
+        #         desc = str(balance[0]) + ": " + str(balance[1]) + "\n" + desc
+        #     print(desc)
+        #     await ctx.send(desc)
 
         # Invalid action reply
         else:
