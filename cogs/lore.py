@@ -32,6 +32,9 @@ class Lore(commands.Cog):
     @commands.command(name='lore', description="View some enjoyable server lore.",
                       help="This is for lore reading.")
     async def lore(self, ctx, *, lore_title: typing.Optional[str]):
+        if lore_title not in all_lore:
+            await ctx.send("You must be from a different timeline (or really bad at spelling) because we don't have "
+                           "that lore on record.")
         lore_title = random.choice(all_lore) if lore_title is None else lore_title
         embed = lore_keeper[lore_title]
         await ctx.send(embed=embed)
