@@ -35,6 +35,7 @@ class Lore(commands.Cog):
         if lore_title not in all_lore:
             await ctx.send("You must be from a different timeline (or really bad at spelling) because we don't have "
                            "that lore on record.")
+            return
         lore_title = random.choice(all_lore) if lore_title is None else lore_title
         embed = lore_keeper[lore_title]
         await ctx.send(embed=embed)
