@@ -7,8 +7,8 @@ import prizes
 import re
 
 # B·Bux is the specialized Billager prize ticket system
-# I have no idea what this is really meant to be but I'd gonna do it anyway
-# Deciding on a symbol, currently between these: ᘋ, ᛒ, ᴃ
+# Represented by this symbol: ᘋ
+# I chose it at random from the Unicode compendium for it's vague resemblance of the letter B
 
 # Rarity colors:
 common = 0x150549
@@ -22,9 +22,9 @@ PRIZES = prizes.prizes()
 
 
 # BBux Bank management function
-# action: Add or remove to a balance, or see what the current balance is
-# member: Which user's balance to manage
-# amount: How many BBux to add/remove
+#   action: Add or remove to a balance, or see what the current balance is
+#   member: Which user's balance to manage
+#   amount: How many BBux to add/remove
 def bank(action, member, amount):
     bbux_bank = shelve.open("bbux_bank")
     if action == "add":
@@ -38,7 +38,10 @@ def bank(action, member, amount):
     bbux_bank.close()
 
 
-# Just need to implement the removal feature
+# BBux prize management function
+#   add: Adds the designated prize to the user's collection
+#   remove: Removes the designated prize to the user's collection
+#   retrieve: Returns the the prizes owned by the user
 def collection(action, member, prize):
     # Making changes using update() here only works when using a temporary dict to update the value, apparently
     member_collections = shelve.open("member_collection")
@@ -90,10 +93,12 @@ class BBux(commands.Cog):
     # Displays the information regarding a specified prize, a list of all prizes, or a random prize if no input is given
     @commands.command(name="prize", help="See the details on a special BBux prize!")
     async def prize(self, ctx, *, item: typing.Optional[str]):
-        # Format item so that ’ and ' don't get caught up in the PRIZES keys, also make case insensitive
-        item = re.sub(r"[’']", "", item.lower())
-        # Assign a random prize to display if a specific was not asked for
-        item = random.choice(list(PRIZES.keys())) if item is None else item
+        if item is not None:
+            # Format item so that ’ and ' don't get caught up in the PRIZES keys, also make case insensitive
+            item = re.sub(r"[’']", "", item.lower())
+        else:
+            # Assign a random prize to display if a specific was not asked for
+            item = random.choice(list(PRIZES.keys())) if item is None else item
 
         # Display full prize list
         if item == "all":
@@ -109,7 +114,7 @@ class BBux(commands.Cog):
                                 inline=False)
                 for prize in prize_names:
                     if PRIZES[prize][3] == rarity:
-                        embed.add_field(name=prize, value=PRIZES[prize][2] + " ᘋ", inline=True)
+                        embed.add_field(name=PRIZES[prize][0].title, value=PRIZES[prize][2] + " ᘋ", inline=True)
 
             await ctx.send(embed=embed)
             return
@@ -154,7 +159,8 @@ class BBux(commands.Cog):
                 bank("remove", ctx.message.author.mention, PRIZES[prize][2])
                 collection("add", ctx.message.author.mention, PRIZES[prize][0].title)
                 await ctx.send("You've redeemed {0} of your BBux for this wonderful item: {1}"
-                               .format(PRIZES[prize][2], PRIZES[prize][0].title) + "\n" + "Congratulations on your shiny new prize!")
+                               .format(PRIZES[prize][2], PRIZES[prize][0].title) +
+                               "\n" + "Congratulations on your shiny new prize!")
         # Process a sell request for a prize
         elif action.lower() == "pawn":
             # Check if the requested prize exists
