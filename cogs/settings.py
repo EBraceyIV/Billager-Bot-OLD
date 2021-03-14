@@ -19,7 +19,7 @@ class Settings(commands.Cog):
         except AttributeError:
             # If the requested activity type is invalid, tell user it isn't and what is
             await ctx.send("That is not a valid activity type. I only accept \"playing\", \"listening\", \"watching\", "
-                           "or \"competing\". The food basic food groups of having fun.")
+                           "or \"competing\". The four basic food groups of having fun.")
         except Exception as e:
             # Just in case some weird other error pops up.
             print("Exception type: " + str(type(e)) + "\nException: " + str(e))
