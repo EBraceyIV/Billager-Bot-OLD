@@ -3,28 +3,30 @@ from discord.ext import commands
 import json
 
 validOutputs = ["callout"]
-discord_activity_types = {"playing": discord.ActivityType.playing,
-                          "listening": discord.ActivityType.listening,
-                          "watching": discord.ActivityType.watching,
-                          "competing": discord.ActivityType.competing}
 
 
 class Settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # Allow users to change the bot's presence using four basic activity types
     @commands.command(name="presence")
     async def presence(self, ctx, activity_type, *, activity):
-        if activity_type not in discord_activity_types:
+        # Check that the requested activity type is valid, tell user if it isn't and what is
+        try:
+            # Use getattr() to pass the activity type as the attribute directly
+            await self.bot.change_presence(activity=discord.Activity(
+                    type=getattr(discord.ActivityType, activity_type.lower()), name=activity))
+        except AttributeError:
             await ctx.send("That is not a valid activity type. I only accept \"playing\", \"listening\", \"watching\", "
                            "or \"competing\". The food basic food groups of having fun.")
-        for discord_activity_type in discord_activity_types.keys():
-            if activity_type == discord_activity_type:
-                activity_type = discord_activity_types[activity_type]
-        await self.bot.change_presence(activity=discord.Activity(type=activity_type, name=activity))
+        except Exception as e:
+            # Just in case some weird other error pops up.
+            print("Exception type: " + str(type(e)) + "\nException: " + str(e))
+            await ctx.send("If you're reading this, you broke something I didn't know could break. "
+                           "Please call for help.")
 
     # Setting up some framework for a more modular way of defining which channels certain outputs go to
-    #
     # Dealing with reading and writing to JSON files for settings
     @commands.command(name="outputs", hidden=True)
     async def outputs(self, ctx, output, channel):
