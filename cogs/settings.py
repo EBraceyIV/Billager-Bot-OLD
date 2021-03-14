@@ -12,12 +12,12 @@ class Settings(commands.Cog):
     # Allow users to change the bot's presence using four basic activity types
     @commands.command(name="presence")
     async def presence(self, ctx, activity_type, *, activity):
-        # Check that the requested activity type is valid, tell user if it isn't and what is
         try:
             # Use getattr() to pass the activity type as the attribute directly
             await self.bot.change_presence(activity=discord.Activity(
                     type=getattr(discord.ActivityType, activity_type.lower()), name=activity))
         except AttributeError:
+            # If the requested activity type is invalid, tell user it isn't and what is
             await ctx.send("That is not a valid activity type. I only accept \"playing\", \"listening\", \"watching\", "
                            "or \"competing\". The food basic food groups of having fun.")
         except Exception as e:
