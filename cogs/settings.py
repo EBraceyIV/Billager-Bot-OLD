@@ -1,12 +1,27 @@
+import discord
 from discord.ext import commands
 import json
 
 validOutputs = ["callout"]
+discord_activity_types = {"playing": discord.ActivityType.playing,
+                          "listening": discord.ActivityType.listening,
+                          "watching": discord.ActivityType.watching,
+                          "competing": discord.ActivityType.competing}
 
 
 class Settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(name="presence")
+    async def presence(self, ctx, activity_type, *, activity):
+        if activity_type not in discord_activity_types:
+            await ctx.send("That is not a valid activity type. I only accept \"playing\", \"listening\", \"watching\", "
+                           "or \"competing\". The food basic food groups of having fun.")
+        for discord_activity_type in discord_activity_types.keys():
+            if activity_type == discord_activity_type:
+                activity_type = discord_activity_types[activity_type]
+        await self.bot.change_presence(activity=discord.Activity(type=activity_type, name=activity))
 
     # Setting up some framework for a more modular way of defining which channels certain outputs go to
     #
@@ -30,9 +45,14 @@ class Settings(commands.Cog):
         await ctx.send("Reloaded voice cog.")
 
     @outputs.error
-    async def score_error(self, ctx, error):
+    async def outputs_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You're missing the output label or the designated channel, try again.")
+
+    @presence.error
+    async def presence_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You're missing the activity type or activity description, try again.")
 
 
 def setup(bot):
