@@ -100,7 +100,7 @@ class BasicReply(commands.Cog, name="Basic Replies"):
             # Get all of the server information
             status = server.status()
         except Exception:
-            ctx.send("Server is down :(")
+            await ctx.send("Server is down :(")
             return
 
         # Build the embed message using the server query
