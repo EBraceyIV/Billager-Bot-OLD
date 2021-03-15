@@ -96,8 +96,12 @@ class BasicReply(commands.Cog, name="Basic Replies"):
     # Provides current player count and latency to the Minecraft server
     @commands.command(name="blocks", help='Minecraft Server Info')
     async def blocks(self, ctx):
-        # Get all of the server information
-        status = server.status()
+        try:
+            # Get all of the server information
+            status = server.status()
+        except Exception:
+            ctx.send("Server is down :(")
+            return
 
         # Build the embed message using the server query
         embed = discord.Embed(title='Dwayneblock Memorial Minecraft Server',
