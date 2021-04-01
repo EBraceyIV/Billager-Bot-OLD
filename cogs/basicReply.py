@@ -61,6 +61,7 @@ class BasicReply(commands.Cog, name="Basic Replies"):
                        "c!play surf rock anthology volume 1",
                        "c!play sounds of the supermarket",
                        "c!play a girl worth fighting for",
+                       "c!play yankee doodle swag remix",
                        monkaGun,
                        "GET IN THE CAR HORATIO",
                        "I can't believe this",
@@ -83,7 +84,10 @@ class BasicReply(commands.Cog, name="Basic Replies"):
                        "Dunston checks in",
                        "I cannot believe you",
                        "I will remember this",
-                       "I don't remember the touch of a woman " + fortCry]
+                       "I don't remember the touch of a woman " + fortCry,
+                       "you're gonna lose your JOB",
+                       "doodoo ass",
+                       "time to go spend time with old ball and chain"]
         response = random.choice(willReplies)
         await ctx.send(response)
 

@@ -4,14 +4,11 @@ from discord.ext import commands
 import TOKEN
 import shelve
 
-# TODO :For merge to master:
-# TODO - Go over every file and comment / improve comment quality
-# TODO - Look for duplicate blocks and try to simplify
-
 # TOKEN retrieved from a separate file with just a function that returns the string
 TOKEN = TOKEN.token()
 
-bot = commands.Bot(command_prefix=['bb:', 'BB:', 'Bb:', 'Bb:'], description="Your very good friend, the Billager.",
+bot = commands.Bot(command_prefix=['bb:', 'BB:', 'Bb:', 'Bb:'],
+                   description="Your very good friend, the Billager.",
                    case_insensitive=True)
 
 
