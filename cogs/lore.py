@@ -41,8 +41,8 @@ def embed_init(lore_title, lore_desc):
                           description=lore_desc,
                           color=0x7289da)
     # A randomly chosen number is given to the lore entry for show on construction
-    embed.set_author(name='Lore Nugget #' + str(random.randint(1000, 9999)))
-    embed.set_footer(text='More Lore? Tell BBot what needs to be remembered.')
+    embed.set_author(name="Lore Nugget #" + str(random.randint(1000, 9999)))
+    embed.set_footer(text="More Lore? Tell BBot what needs to be remembered.")
     return embed
 
 
@@ -111,8 +111,6 @@ class Lore(commands.Cog):
             # Reassign the description and reassign the value to the key
             embed.description = edit
             lore_access("edit", lore_title, embed)
-            # lore_access("remove", lore_title, None)
-            # lore_access("add", lore_title, embed)
         elif edit_field.lower() == "num":
             # Validate that users have entered a valid number (int or float)
             try:
@@ -125,9 +123,12 @@ class Lore(commands.Cog):
                     return
                 else:
                     # Assign the manual ID number to the lore
-                    embed.set_author(name='Lore Nugget #' + str(edit))
-                    lore_access("remove", lore_title, None)
-                    lore_access("add", lore_title, embed)
+                    embed.set_author(name="Lore Nugget #" + str(edit))
+                    lore_access("edit", lore_title, embed)
+            else:
+                # Assign the manual ID number to the lore
+                embed.set_author(name="Lore Nugget #" + str(edit))
+                lore_access("edit", lore_title, embed)
         else:
             await ctx.send("That's not an editable field for the lore.")
             return
