@@ -22,6 +22,9 @@ def lore_access(action, lore_title_, embed_):
         lore_keeper[lore_title_] = embed_
     elif action == "remove":
         del lore_keeper[lore_title_]
+    elif action == "edit":
+        lore_access("remove", lore_title_, None)
+        lore_access("add", lore_title_, embed_)
     elif action == "retrieve":
         embed = lore_keeper[lore_title_]
         return embed
@@ -64,10 +67,10 @@ class Lore(commands.Cog):
     # Display a list of all lore currently stored
     @commands.command(name="loreList", description="See a list of all available lore.",
                       help="This is for seeing what lore is currently on file.")
-    async def lorelist(self, ctx):
+    async def lore_list(self, ctx):
         # Initialize the embed
         embed = discord.Embed(title="Billager's Lore Compository", color=0x7289da)
-        embed.set_footer(text='More Lore? Tell BBot what needs to be remembered.')
+        embed.set_footer(text="More Lore? Tell BBot what needs to be remembered.")
         # To iterate on the description for the embed, start as a normal string
         description = "Here you can see the full archive of all lore currently on record.\n" \
                       "Use `bb:lore <lore title>` to read more about any entry.\n\n" \
@@ -79,8 +82,10 @@ class Lore(commands.Cog):
         await ctx.send(embed=embed)
 
     # Add a new piece of lore to the records
-    @commands.command(name='addLore')
-    async def addLore(self, ctx, lore_title: str, *, lore_description: str):
+    @commands.command(name="addLore", description="Add a new piece of lore to the records. Title and then description.",
+                      help="Title that contain a space must be put in quotation marks. Anything after that will be "
+                           "used as the description of the lore.")
+    async def add_lore(self, ctx, lore_title: str, *, lore_description: str):
         # Pass the relevant info to the embed builder
         embed = embed_init(lore_title, lore_description)
         # The lore is stored as the type embed in the shelf file
@@ -88,8 +93,8 @@ class Lore(commands.Cog):
         await ctx.send(embed=embed)
 
     # Edit an existing piece of lore
-    @commands.command(name='editLore')
-    async def editLore(self, ctx, lore_title: str, edit_field: str, *, edit: str):
+    @commands.command(name="editLore")
+    async def edit_lore(self, ctx, lore_title: str, edit_field: str, *, edit: str):
         if lore_title not in all_lore:
             await ctx.send("Can't find that lore!")
             return
@@ -105,8 +110,24 @@ class Lore(commands.Cog):
         elif edit_field.lower() == "desc":
             # Reassign the description and reassign the value to the key
             embed.description = edit
-            lore_access("remove", lore_title, None)
-            lore_access("add", lore_title, embed)
+            lore_access("edit", lore_title, embed)
+            # lore_access("remove", lore_title, None)
+            # lore_access("add", lore_title, embed)
+        elif edit_field.lower() == "num":
+            # Validate that users have entered a valid number (int or float)
+            try:
+                edit = int(edit)
+            except ValueError:
+                try:
+                    edit = float(edit)
+                except ValueError:
+                    await ctx.send("Since my brain is a computer, it'll help if you make that a number instead.")
+                    return
+                else:
+                    # Assign the manual ID number to the lore
+                    embed.set_author(name='Lore Nugget #' + str(edit))
+                    lore_access("remove", lore_title, None)
+                    lore_access("add", lore_title, embed)
         else:
             await ctx.send("That's not an editable field for the lore.")
             return
@@ -116,7 +137,7 @@ class Lore(commands.Cog):
     # Remove a piece of lore from the records
     @commands.command(name="killLore", help="Remove a piece of lore from the records.",
                       description="Only the user who issues this command can reply to confirm.")
-    async def killLore(self, ctx, lore_title):
+    async def kill_lore(self, ctx, lore_title):
         # Check to see if the lore exists
         if lore_title not in all_lore:
             await ctx.send("Can't find that lore!")
@@ -150,8 +171,8 @@ class Lore(commands.Cog):
                 await ctx.send("The lore remains intact.")
 
     # Send a "relevant" error message if there was a problem editing lore
-    @editLore.error
-    async def editLore_error(self, ctx, error):
+    @edit_lore.error
+    async def edit_lore_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please don't do that. Try again but try harder.")
         else:
@@ -159,8 +180,8 @@ class Lore(commands.Cog):
             await ctx.send("You really messed something up. This could be a problem.")
 
     # Send a "relevant" error message if there was a problem adding lore
-    @addLore.error
-    async def addLore_error(self, ctx, error):
+    @add_lore.error
+    async def add_lore_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please don't do that. Try again but try harder.")
         else:
