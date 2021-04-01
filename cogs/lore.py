@@ -11,6 +11,10 @@ all_lore = list(lore_list.keys())
 lore_list.close()
 
 
+# Lore management function
+#   action: Add to or remove from lore record, or retrieve a lore entry to alter/display
+#   member: Which lore entry to manage
+#   embed: The discord.Embed content for the designated lore entry
 def lore_access(action, lore_title_, embed_):
     global all_lore
     lore_keeper = shelve.open("loreKeeper")
@@ -26,13 +30,15 @@ def lore_access(action, lore_title_, embed_):
 
 
 # Embed constructor to clear up code
-def embed_init(lore_title, lore_desc, lore_num):
-    # embed is the object that contains all the lore info, can be edited easy due to modularity
+#   lore_title: The name of the lore entry
+#   lore_desc: The description / content of the lore entry
+def embed_init(lore_title, lore_desc):
+    # embed is the object that contains all the lore info, can be edited easily as an object
     embed = discord.Embed(title=lore_title,
                           description=lore_desc,
                           color=0x7289da)
-    # embed.author is constructed this way to allow generation of the number separately from the flavor text
-    embed.set_author(name='Lore Nugget #' + lore_num)
+    # A randomly chosen number is given to the lore entry for show on construction
+    embed.set_author(name='Lore Nugget #' + str(random.randint(1000, 9999)))
     embed.set_footer(text='More Lore? Tell BBot what needs to be remembered.')
     return embed
 
@@ -75,9 +81,8 @@ class Lore(commands.Cog):
     # Add a new piece of lore to the records
     @commands.command(name='addLore')
     async def addLore(self, ctx, lore_title: str, *, lore_description: str):
-        lore_num = str(random.randint(1000, 9999))
         # Pass the relevant info to the embed builder
-        embed = embed_init(lore_title, lore_description, lore_num)
+        embed = embed_init(lore_title, lore_description)
         # The lore is stored as the type embed in the shelf file
         lore_access("add", lore_title, embed)
         await ctx.send(embed=embed)
