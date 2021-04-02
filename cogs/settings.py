@@ -41,7 +41,7 @@ class Settings(commands.Cog):
             print(json.load(f))
 
     # A more advanced method to fixing any issues with the voice chat functionality, reloads the whole cog
-    @commands.command(name="vreload", hidden=True)
+    @commands.command(name="vreload", help="Reload the voice cog, only works if BBot is not in the voice channel.")
     async def vreload(self, ctx):
         self.bot.reload_extension("cogs.voice")
         await ctx.send("Reloaded voice cog.")
