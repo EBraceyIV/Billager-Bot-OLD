@@ -10,7 +10,7 @@ class Settings(commands.Cog):
         self.bot = bot
 
     # Allow users to change the bot's presence using four basic activity types
-    @commands.command(name="presence")
+    @commands.command(name="presence", help="Change BBot's Discord presence.")
     async def presence(self, ctx, activity_type, *, activity):
         try:
             # Use getattr() to pass the activity type as the attribute directly

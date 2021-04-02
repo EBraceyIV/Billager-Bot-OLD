@@ -29,7 +29,6 @@ class Score(commands.Cog):
                     plusMinus[member.mention] = num
                 else:
                     plusMinus[member.mention] = int(plusMinus[member.mention]) + num
-                # com_term = self.bot.get_channel(461773779165511681)
                 await ctx.reply(str(member.display_name) + ' +' + str(num), mention_author=False)
 
         except ValueError:
@@ -48,7 +47,6 @@ class Score(commands.Cog):
                 plusMinus[member.mention] = int(plusMinus[member.mention]) - num
                 print(member.mention + ' is up to ' + str(plusMinus[member.mention]))
 
-            # com_term = self.bot.get_channel(461773779165511681)
             await ctx.reply(str(member.display_name) + ' -' + str(num), mention_author=False)
 
         except ValueError:
@@ -78,7 +76,7 @@ class Score(commands.Cog):
             desc = str(score[0]) + ": " + str(score[1]) + "\n" + desc
         # Add some flavor text and send the message
         embed.description = "Here's the current scoreboard. Honestly can't believe these numbers: \n\n" + desc
-        embed.set_footer(text="Be sure to use bb:+ and bb:- to our keep scoreboard up to date.")
+        embed.set_footer(text="Be sure to use bb:+ and bb:- to keep our scoreboard up to date.")
         await ctx.send(embed=embed)
 
     # Some general error processing for some of the score commands

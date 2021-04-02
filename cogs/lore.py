@@ -82,9 +82,9 @@ class Lore(commands.Cog):
         await ctx.send(embed=embed)
 
     # Add a new piece of lore to the records
-    @commands.command(name="addLore", description="Add a new piece of lore to the records. Title and then description.",
-                      help="Title that contain a space must be put in quotation marks. Anything after that will be "
-                           "used as the description of the lore.")
+    @commands.command(name="addLore", help="Add a new piece of lore to the records. Title and then description.",
+                      description="Title that contain a space must be put in quotation marks. Anything after that will "
+                                  "be used as the description of the lore.")
     async def add_lore(self, ctx, lore_title: str, *, lore_description: str):
         # Pass the relevant info to the embed builder
         embed = embed_init(lore_title, lore_description)
@@ -93,7 +93,8 @@ class Lore(commands.Cog):
         await ctx.send(embed=embed)
 
     # Edit an existing piece of lore
-    @commands.command(name="editLore")
+    @commands.command(name="editLore",
+                      help="Edit a piece of lore on the records. Lore title, what's changing, then the change.")
     async def edit_lore(self, ctx, lore_title: str, edit_field: str, *, edit: str):
         if lore_title not in all_lore:
             await ctx.send("Can't find that lore!")
