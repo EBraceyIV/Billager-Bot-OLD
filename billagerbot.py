@@ -29,16 +29,35 @@ async def on_ready():
     bbux_bank.close()
     member_collections.close()
 
+    # Load the command cogs
+    cog_loader("load")
+
+    # Breathe a bit of life into our creation with some fun activity
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="with his axe."))
+
+
+# In case there are any unforeseen issues, the cogs can all be reloaded by a mod/admin
+@bot.command(name="cogReload", help="Reload them cogs", hidden=True)
+@commands.check(commands.has_guild_permissions(manage_guild=True))
+async def cog_reload(ctx):
+    cog_loader("reload")
+    await ctx.send("Cogs Reloaded. KACHOW!")
+
+
+# Function to load/reload cogs depending on whether the bot is starting up or if bb:cogreload has been used
+def cog_loader(load_style):
     # Load each cog included in the "cogs" directory
     for cog in os.listdir("cogs"):
         if cog.endswith(".py"):  # Safety check to not process any non-cog files
             try:
-                bot.load_extension(f'cogs.{cog[:-3]}')
+                # Load or reload, depending on the load_style defined
+                if load_style == "load":
+                    bot.load_extension(f'cogs.{cog[:-3]}')
+                else:
+                    bot.reload_extension(f'cogs.{cog[:-3]}')
             except Exception as e:  # Report any cog loading errors to the console
                 print("Couldn't load cog \"{0}\"".format(cog))
                 print("Error: {0}".format(e))
-    # Breathe a bit of life into our creation with some fun activity
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="with his axe."))
 
 
 # This is currently just for my own reference in the future
