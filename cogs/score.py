@@ -3,8 +3,30 @@ from discord.ext import commands
 import shelve
 import typing
 
-# shelve init
-plusMinus = shelve.open('plusMinus')  # stores the +- scores
+# Initialize the scoreboard list of all currently scored members
+scores = shelve.open("plusMinus")
+scored_members = list(scores.keys())
+scores.close()
+
+
+# Member score management function
+#   action: Add to or subtract from a score, or see what the score is
+#   member: Which user's score to manage
+#   amount: What score to add/remove
+def score_func(action, member, amount):
+    global scored_members
+    plus_minus = shelve.open("plusMinus")
+    if action == "init":
+        plus_minus[member] = amount
+    elif action == "add":
+        plus_minus[member] = plus_minus.get(member) + amount
+    elif action == "get":
+        return plus_minus.get(member)
+    elif action == "subtract":
+        plus_minus[member] = plus_minus.get(member) - amount
+    scored_members = list(plus_minus.keys())
+    plus_minus.close()
+
 
 # This is here to use
 beefBrain = '<:BeefBrain:631694337549271050>'
@@ -25,10 +47,10 @@ class Score(commands.Cog):
                 await ctx.send("Trying to boost your own numbers? Shameful.")
                 return
             else:
-                if member.mention not in plusMinus:
-                    plusMinus[member.mention] = num
+                if member.mention not in scored_members:
+                    score_func("init", member.mention, num)
                 else:
-                    plusMinus[member.mention] = int(plusMinus[member.mention]) + num
+                    score_func("add", member.mention, num)
                 await ctx.reply(str(member.display_name) + ' +' + str(num), mention_author=False)
 
         except ValueError:
@@ -40,13 +62,10 @@ class Score(commands.Cog):
     async def minus(self, ctx, num: typing.Optional[int] = 1, *, member: discord.Member):
         # Some in-command error catching, +- will only process integers
         try:
-            print(member.mention + ' -' + str(num))
-            if member.mention not in plusMinus:
-                plusMinus[member.mention] = -num
+            if member.mention not in scored_members:
+                score_func("init", member.mention, -num)
             else:
-                plusMinus[member.mention] = int(plusMinus[member.mention]) - num
-                print(member.mention + ' is up to ' + str(plusMinus[member.mention]))
-
+                score_func("subtract", member.mention, num)
             await ctx.reply(str(member.display_name) + ' -' + str(num), mention_author=False)
 
         except ValueError:
@@ -57,10 +76,10 @@ class Score(commands.Cog):
     async def score(self, ctx, member: typing.Optional[discord.Member]):
         member = ctx.message.author if member is None else member
         # Initialize user's score if they don't already have one
-        if member.mention not in plusMinus:
-            plusMinus[member.mention] = int(0)
-        print(member.display_name + ' is at a ' + str(plusMinus[member.mention]))
-        await ctx.send(member.display_name + ' is at a ' + str(plusMinus[member.mention]))
+        if member.mention not in scored_members:
+            score_func("init", member.mention, 0)
+        print(member.display_name + ' is at a ' + str(score_func("get", member.mention, None)))
+        await ctx.send(member.display_name + ' is at a ' + str(score_func("get", member.mention, None)))
 
     # Show a scoreboard from highest to lowest for all users with a score
     @commands.command(name="scoreboard", help="Scoreboard of the highest and lowest scores.")
@@ -68,12 +87,14 @@ class Score(commands.Cog):
         # Initialize scoreboard embed message and embed description
         embed = discord.Embed(title="Scoreboard")
         desc = ""
+        score_list = shelve.open("plusMinus")
         # Sort the current user scores from highest to lowest
-        score_sorted = sorted(plusMinus.items(), key=lambda x: x[1])
+        score_sorted = sorted(score_list.items(), key=lambda x: x[1])
         # Iterate through the scores and build the embed content
         for score in score_sorted:
             # Here "score" is a tuple, containing the user and score, adding each to a new line
             desc = str(score[0]) + ": " + str(score[1]) + "\n" + desc
+        score_list.close()
         # Add some flavor text and send the message
         embed.description = "Here's the current scoreboard. Honestly can't believe these numbers: \n\n" + desc
         embed.set_footer(text="Be sure to use bb:+ and bb:- to keep our scoreboard up to date.")

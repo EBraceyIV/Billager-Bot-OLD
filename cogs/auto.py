@@ -50,9 +50,9 @@ class Auto(commands.Cog):
                 await asyncio.sleep(120)
 
                 # Sort the current user scores from highest to lowest
-                plusMinus = shelve.open("plusMinus")
-                score_sorted = sorted(plusMinus.items(), key=lambda x: x[1])
-                plusMinus.close()
+                plus_minus = shelve.open("plusMinus")
+                score_sorted = sorted(plus_minus.items(), key=lambda x: x[1])
+                plus_minus.close()
 
                 # Send our fun little message letting our friend know they should try making better jokes
                 await message.channel.send("This is your weekly Bad Score Callout Post, a public service brought to "
@@ -65,9 +65,9 @@ class Auto(commands.Cog):
                 called_out = False
                 # Reset the whole scoreboard monthly, this should typically catch the last Saturday of the month
                 if time.day >= 24:
-                    plusMinus = shelve.open("plusMinus")
-                    plusMinus.clear()
-                    plusMinus.close()
+                    plus_minus = shelve.open("plusMinus")
+                    plus_minus.clear()
+                    plus_minus.close()
 
 
 def setup(bot):
