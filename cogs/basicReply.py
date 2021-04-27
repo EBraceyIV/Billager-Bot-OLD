@@ -15,7 +15,7 @@ monkaGun = '<:monkaGun:650922885627772949>'
 fortCry = '<:fortCry:600190388241694770>'
 
 # mcstatus init
-server = MinecraftServer.lookup("192.99.4.195:25577")  # my minecraft server
+server = MinecraftServer.lookup("51.222.97.38:25624")  # my minecraft server
 
 
 class BasicReply(commands.Cog, name="Basic Replies"):
@@ -110,12 +110,13 @@ class BasicReply(commands.Cog, name="Basic Replies"):
         # Build the embed message using the server query
         embed = discord.Embed(title='Dwayneblock Memorial Minecraft Server',
                               color=0xdd3333,
-                              description='{0} Come play with blocks at {1}:{2}'
+                              description='{0} Come play with blocks at {1}:{2}\n'
                               .format(dwayneBlock, server.host, server.port))
         embed.add_field(name='Players Online:', value=status.players.online)
         embed.add_field(name='Latency:', value=str(status.latency) + ' ms')
         embed.add_field(name='Game Version:', value=status.version.name)
-        embed.set_footer(text='This server is hosted out of Houston, TX by Villagerhost.')
+        embed.add_field(name="Modpack", value="The 1.12.2 Pack, v. 1.3.4")
+        embed.set_footer(text='This server is hosted in the USA by Shockbyte.')
         await ctx.send(embed=embed)
 
 
