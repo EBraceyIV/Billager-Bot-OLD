@@ -63,11 +63,15 @@ class Auto(commands.Cog):
             # Reset the called_out status on Saturday
             if called_out and time.weekday() == 5:
                 called_out = False
-                # Reset the whole scoreboard monthly, this should typically catch the last Saturday of the month
-                if time.day >= 24:
-                    plus_minus = shelve.open("plusMinus")
-                    plus_minus.clear()
-                    plus_minus.close()
+                # Reset the scoreboard weekly
+                plus_minus = shelve.open("plusMinus")
+                plus_minus.clear()
+                plus_minus.close()
+                # # Reset the whole scoreboard monthly, this should typically catch the last Saturday of the month
+                # if time.day >= 24:
+                #     plus_minus = shelve.open("plusMinus")
+                #     plus_minus.clear()
+                #     plus_minus.close()
 
 
 def setup(bot):
