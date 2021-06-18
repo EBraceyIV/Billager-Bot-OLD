@@ -4,6 +4,7 @@ import random
 import typing
 import shelve
 import asyncio
+import datetime
 
 # lore_keeper stores all of the discord.Embed objects for read/write
 lore_list = shelve.open("loreKeeper")
@@ -40,9 +41,12 @@ def embed_init(lore_title, lore_desc):
     embed = discord.Embed(title=lore_title,
                           description=lore_desc,
                           color=0x7289da)
+    # Generate date the lore was added to add to footer
+    date = datetime.date.today()
     # A randomly chosen number is given to the lore entry for show on construction
     embed.set_author(name="Lore Nugget #" + str(random.randint(1000, 9999)))
-    embed.set_footer(text="More Lore? Tell BBot what needs to be remembered.")
+    embed.set_footer(text="Lore added: " + str(date) + "\n"
+                          "More Lore? Tell BBot what needs to be remembered.")
     return embed
 
 
