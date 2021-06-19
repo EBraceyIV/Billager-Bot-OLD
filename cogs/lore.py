@@ -143,7 +143,7 @@ class Lore(commands.Cog):
     # Remove a piece of lore from the records
     @commands.command(name="killLore", help="Remove a piece of lore from the records.",
                       description="Only the user who issues this command can reply to confirm.")
-    async def kill_lore(self, ctx, lore_title):
+    async def kill_lore(self, ctx, *, lore_title):
         # Check to see if the lore exists
         if lore_title not in all_lore:
             await ctx.send("Can't find that lore!")
