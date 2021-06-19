@@ -149,48 +149,36 @@ class Lore(commands.Cog):
             await ctx.send("Can't find that lore!")
             return
 
-        # Ask for confirmation to delete the lore
-        await ctx.send("Are you sure you want to destroy the " + lore_title + " lore? A simple yes or no will do.")
+        # Ask for confirmation to delete the lore, confirmation conveyed by clicking on the trash can reaction
+        kill_confirmation = await ctx.reply("Are you sure you want to destroy the " + lore_title + " lore? " +
+                                            "Click 🗑 to confirm.", mention_author=False)
+        await kill_confirmation.add_reaction("🗑")
 
-        # The yes/no check for the confirmation message used in wait_for below
-        def check(message):
-            # Only allow the user who made the request to confirm the request
-            if message.content.lower() == "yes" and ctx.message.author == message.author:
-                return "yes"
-            elif message.content.lower() == "no" and ctx.message.author == message.author:
-                return "no"
-            else:
-                return False
+        # The check to see if another trash can reaction is added and if it was added by the user that made the request
+        def check(reaction, user):
+            # Upon passing True, the try block below runs the else statement
+            return user == ctx.author and str(reaction.emoji) == "🗑"
 
         # Process the confirmation message
         try:
-            # Give the user 5 seconds to confirm according to the check function
-            kill_confirm = await self.bot.wait_for('message', timeout=5.0, check=check)
-        except asyncio.TimeoutError:  # Inform user they ran out of time to confirm
+            # Give the user 10 seconds to confirm according to the check function
+            await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+        except asyncio.TimeoutError:
+            # Inform user they ran out of time to confirm
             await ctx.send("This is taking too long. Next time, be ready to pull the trigger.")
         else:
             # Delete the lore if confirmation check is passed
-            if kill_confirm.content == "yes":
-                lore_access("remove", lore_title, None)
-                await ctx.send("The deed is done.")
-            else:
-                await ctx.send("The lore remains intact.")
+            lore_access("remove", lore_title, None)
+            await ctx.send("The deed is done.")
 
     # Send a "relevant" error message if there was a problem editing lore
     @edit_lore.error
-    async def edit_lore_error(self, ctx, error):
+    @add_lore.error
+    async def lore_arg_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please don't do that. Try again but try harder.")
+            await ctx.send("Please don't do that. Try again but try harder, you're missing something.")
         else:
             print(error)
-            await ctx.send("You really messed something up. This could be a problem.")
-
-    # Send a "relevant" error message if there was a problem adding lore
-    @add_lore.error
-    async def add_lore_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please don't do that. Try again but try harder.")
-        else:
             await ctx.send("You really messed something up. This could be a problem.")
 
 
