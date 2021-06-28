@@ -87,7 +87,9 @@ class BasicReply(commands.Cog, name="Basic Replies"):
                        "I don't remember the touch of a woman " + fortCry,
                        "you're gonna lose your JOB",
                        "doodoo ass",
-                       "time to go spend time with old ball and chain"]
+                       "no ball shaming allowed",
+                       "show me balls, Steve!",
+                       "No, I'm Will"]
         response = random.choice(willReplies)
         await ctx.send(response)
 
