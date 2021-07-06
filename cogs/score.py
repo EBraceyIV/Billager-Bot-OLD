@@ -71,6 +71,27 @@ class Score(commands.Cog):
         except ValueError:
             await ctx.send('You can only subtract whole numbers ' + beefBrain)
 
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction, user):
+        if reaction.emoji == "👎":
+            if reaction.message.author.mention not in scored_members:
+                score_func("init", reaction.message.author.mention, -1)
+            else:
+                score_func("subtract", reaction.message.author.mention, 1)
+            # await reaction.message.reply(str(reaction.message.author.display_name) + ' -' + str(1), mention_author=False)
+
+            # print(reaction.message.author.mention)
+            # score_func("subtract", reaction.message.author.mention, 1)
+            # await reaction.message.channel.send("gungo")
+        elif reaction.emoji == "👍":
+            if user == reaction.message.author:
+                pass
+            else:
+                if reaction.message.author.mention not in scored_members:
+                    score_func("init", reaction.message.author.mention, 1)
+                else:
+                    score_func("add", reaction.message.author.mention, 1)
+
     # Respond with the specified user's score
     @commands.command(name="score", help="List a user's +- score.")
     async def score(self, ctx, member: typing.Optional[discord.Member]):
