@@ -1,3 +1,7 @@
+------------
+***NOTICE: THIS REPO IS NOW CONSIDERED DEPRECATED, RETAINED ONLY FOR PROSPERITY, SEE UPDATED REPO FOR CURRENT VERSION COMPATIBLE WITH DISCORDPY 2.0***
+------------
+
 # Billager-Bot
 Billager Bot is a Discord Bot built using the discord.py library. Designed for use in a specific server for my friends and I, but feel free to use and modify it if you want to. Runs on Python 3.9 with a handful of dependencies for certain features. I wrote this bot to learn more about Python and to create something fun that would provide entertainment and utility for my friends and I. Should work for the most part.
 
